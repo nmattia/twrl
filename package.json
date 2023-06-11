@@ -1,0 +1,18 @@
+{
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "watch": "tsc --noEmit --watch",
+    "preview": "vite preview",
+    "format": "bash -c 'prettier --ignore-path <(cat .gitignore .git/info/exclude) --write .'"
+  },
+  "devDependencies": {
+    "prettier": "2.8.8",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9"
+  }
+}
