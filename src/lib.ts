@@ -6,10 +6,9 @@ declare global {
       img: { src: string; class: string; alt: string };
       h1: {};
       button: {
-        "@click"?: () => void;
-        id: string;
+        onclick?: () => void; // XXX: @ is not allowed in jsx
+        id?: string;
         type: "button";
-        foo: string;
       };
       p: { class: string };
     };
@@ -240,6 +239,10 @@ export class Dyn<A> {
     this.listeners.push(new WeakRef(input));
     this.parent = input; // keep a ref to prevent parent being garbage collected
     return input;
+  }
+
+  update(f: (a: A) => A) {
+    this.send(f(this.latest));
   }
 
   // How the mapped chan should handle the value

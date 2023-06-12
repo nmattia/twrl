@@ -5,7 +5,7 @@ type Child = string | Dyn<string> | Component;
 
 export function createComponent(
   f: string | Function,
-  args: Record<string, string>,
+  args: Record<string, string | (() => void)>,
   children: Child[]
 ): Component {
   let elem;
@@ -13,7 +13,13 @@ export function createComponent(
     elem = document.createElement(f);
 
     for (const key in args) {
-      elem.setAttribute(key, args[key]);
+      const val = args[key];
+      if (typeof val === "string") {
+        elem.setAttribute(key, val);
+      } else {
+        const eventName = key.slice(2); // drop "on"
+        elem.addEventListener(eventName, val);
+      }
     }
   } else if (f instanceof Dyn) {
     console.log("GOT A DYN!");
@@ -65,12 +71,14 @@ export function jsx(...params: unknown[]): Component {
 
   const attrs: Record<string, unknown> = attrs_;
 
-  const newOpts: Record<string, string> = {};
+  const newOpts: Record<string, string | (() => void)> = {};
 
   for (const key of Object.keys(attrs)) {
     const val: unknown = attrs[key];
     if (typeof key === "string" && typeof val === "string") {
       newOpts[key] = val;
+    } else if (typeof key === "string" && typeof val === "function") {
+      newOpts[key] = () => val();
     } else {
       throw new Error(
         "Expected string: string, got " + [typeof key, typeof val].join(": ")
