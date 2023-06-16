@@ -185,8 +185,7 @@ export class Chan<A> implements AsyncIterable<A> {
 export class Dyn<A> {
   public latest: A;
 
-  // private listeners: { keep: () => boolean, f:  (a: A) => void }[] = [];
-  private listeners: { notify: (a: A) => void }[] = [];
+  private listeners: ((a: A) => void)[] = [];
 
   protected parent?: unknown;
 
@@ -198,17 +197,11 @@ export class Dyn<A> {
   }
 
   addListener(f: (a: A) => void) {
-    this.listeners.push(
-      ({
-        notify: (a: A) => {
-          f(a);
-        },
-      })
-    );
+    this.listeners.push(f);
   }
 
   send(a: A) {
-      this.listeners.forEach(listener => listener.notify(a));
+    this.listeners.forEach((listener) => listener(a));
 
     // and set as latest
     this.latest = a;
@@ -219,16 +212,10 @@ export class Dyn<A> {
   ): Dyn<B> {
     const { handleValue, latest } = this.__handleMapOpts(opts);
 
-    // TODO: cleanup
-    // Create a chan that the WeakRef can hang on to, but that automatically
-    // translates As into Bs
-    class MappedDyn extends Dyn<B> {
-      notify(value: A) {
-        handleValue({ send: (a: B) => this.send(a), value });
-      }
-    }
-    const input = new MappedDyn(latest);
-    this.listeners.push((input));
+    const input = new Dyn<B>(latest);
+    this.listeners.push((value: A) =>
+      handleValue({ send: (a: B) => input.send(a), value })
+    );
     this.parent = input; // keep a ref to prevent parent being garbage collected
     return input;
   }
@@ -267,4 +254,14 @@ export class Dyn<A> {
       latest: result === Dyn.unchanged ? opts.def : result,
     };
   }
+}
+
+export function dyn<T>(
+  f: (value: Dyn<T>) => Component,
+  initial: T
+): () => Component {
+  const value = new Dyn(initial);
+  return () => {
+    return f(value);
+  };
 }

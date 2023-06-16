@@ -57,12 +57,12 @@ export function createComponent(
           return document.createTextNode(value);
         } else if (typeof value === "number") {
           return document.createTextNode(value.toString());
-        }else if (value instanceof HTMLElement) {
+        } else if (value instanceof HTMLElement) {
           return value;
         } else {
           throw new Error("Unsupported value for child: " + value);
         }
-      }
+      };
       let node = getNodeValue(child.latest);
 
       elem.appendChild(node);

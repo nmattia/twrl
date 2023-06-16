@@ -1,19 +1,33 @@
-import { Dyn } from "./lib";
+import { dyn } from "./lib";
 import typescriptLogo from "./typescript.svg";
 import viteLogo from "/vite.svg";
 import type { Component } from "./lib";
 
-const Counter = ({}: {}): Component => {
-  const value = new Dyn(0);
-  return (
+const Counter = dyn(
+  (value) => (
     <button onclick={() => value.update((x) => x + 1)} type="button">
       Count is {value}
     </button>
-  );
-};
+  ),
+  0
+);
+
+const names = ["Alice", "Bob", "Chuck"];
+const Greet = dyn(
+  (ix) => (
+    <div>
+      <h1>Hello, {ix.map((ix) => names[ix])} !</h1>
+      <button onclick={() => ix.update((ix) => (ix + 1) % names.length)}>
+        next
+      </button>
+    </div>
+  ),
+  0
+);
 
 export const page: Component = (
   <div>
+    <Greet />
     <a href="https://vitejs.dev" target="_blank">
       <img src={viteLogo} class="logo" alt="Vite logo" />
     </a>
