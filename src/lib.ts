@@ -18,14 +18,6 @@ declare global {
 
 export type Component = HTMLElement;
 
-export function render(component: Component, anchor: HTMLElement) {
-  if (typeof component === "string") {
-    anchor.innerText = component;
-  } else {
-    anchor.append(component);
-  }
-}
-
 /** A channel (Chan) between two execution environments.
  * Values can be sent (`send()`) and received (`recv()`) asynchronously
  * on the other end.

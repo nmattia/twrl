@@ -1,7 +1,6 @@
 import { Dyn } from "./lib";
-import type { Component } from "./lib";
 
-type Child = string | Dyn<string> | Component;
+type Child = string | Dyn<string> | HTMLElement;
 
 export function createIntrinsicComponent(
   tag: string,
@@ -36,7 +35,7 @@ export function createComponent(
   f: string | Function,
   args: Record<string, string | (() => void) | Dyn<string>>,
   children: Child[]
-): Component {
+): HTMLElement {
   let elem;
   if (typeof f === "string") {
     elem = createIntrinsicComponent(f, args);
@@ -79,11 +78,34 @@ export function createComponent(
   return elem;
 }
 
-export function jsx(...params: unknown[]): Component {
+// function called by jsx.
+//  arg0:
+//     - string for intrinsic elements ("div", "span", etc)
+//     - undefined for fragment (<>hello</>)
+//     - the (function) component itself for components (<Greet/>)
+//
+//  arg1:
+//     - always an object
+//     - .children may be:
+//          - undefined if no children
+//          - a single element for a single child
+//          - an array for many children
+//     - .children elements are either:
+//          - 'string's for text nodes (<div>hello</div>)
+//          - the result of jsx call for components/tags (<div><Greet/><img/></div>)
+//              ^ in our case, an HTML element
+//          - the value itself for raw values (<div>{ foo() }</div>)
+//
+export function jsx(...params: unknown[]): HTMLElement {
   const [f, props] = params;
 
-  // XXX: we don't accept constructor functions
+  if (f === undefined) {
+    console.log(f, props);
+    throw new Error("undefined!");
+  }
+
   if (typeof f !== "string" && typeof f !== "function") {
+    console.log(props);
     throw new Error("Expected string or function, got: " + typeof f);
   }
 
