@@ -3,27 +3,46 @@ import type { Component } from "./lib";
 
 type Child = string | Dyn<string> | Component;
 
+export function createIntrinsicComponent(
+  tag: string,
+  attrs: Record<string, string | (() => void) | Dyn<string>>
+): HTMLElement {
+  const elem = document.createElement(tag);
+
+  for (const key in attrs) {
+    const val = attrs[key];
+    if (typeof val === "string") {
+      elem.setAttribute(key, val);
+    } else if (val instanceof Dyn) {
+      const setAttr = (a: unknown) => {
+        if (typeof a === "string") {
+          elem.setAttribute(key, a);
+        } // TODO: else: handle
+      };
+      setAttr(val.latest);
+      val.addListener((a) => {
+        setAttr(a);
+      });
+    } else {
+      const eventName = key.slice(2); // drop "on"
+      elem.addEventListener(eventName, val);
+    }
+  }
+
+  return elem;
+}
+
 export function createComponent(
   f: string | Function,
-  args: Record<string, string | (() => void)>,
+  args: Record<string, string | (() => void) | Dyn<string>>,
   children: Child[]
 ): Component {
   let elem;
   if (typeof f === "string") {
-    elem = document.createElement(f);
-
-    for (const key in args) {
-      const val = args[key];
-      if (typeof val === "string") {
-        elem.setAttribute(key, val);
-      } else {
-        const eventName = key.slice(2); // drop "on"
-        elem.addEventListener(eventName, val);
-      }
-    }
+    elem = createIntrinsicComponent(f, args);
   } else if (f instanceof Dyn) {
-    console.log("GOT A DYN!");
-    // TODO: handle this
+    throw new Error("not implemented");
+    // TODO: handle
   } else {
     elem = f(args); // TODO: how to ensure this is actually a Component?
   }
@@ -33,15 +52,25 @@ export function createComponent(
       const newNode = document.createTextNode(child);
       elem.appendChild(newNode);
     } else if (child instanceof Dyn) {
-      let node = document.createTextNode(child.latest);
+      const getNodeValue = (value: unknown): Node => {
+        if (typeof value === "string") {
+          return document.createTextNode(value);
+        } else if (typeof value === "number") {
+          return document.createTextNode(value.toString());
+        }else if (value instanceof HTMLElement) {
+          return value;
+        } else {
+          throw new Error("Unsupported value for child: " + value);
+        }
+      }
+      let node = getNodeValue(child.latest);
+
       elem.appendChild(node);
-      const eee = elem;
-      child.addListener((a) => {
+      child.addListener((a: unknown) => {
         const oldNode = node;
-        node = document.createTextNode(a);
-        eee.replaceChild(node, oldNode);
+        node = getNodeValue(a);
+        oldNode.parentNode?.replaceChild(node, oldNode);
       });
-      // TODO: document.replaceNode(newNewNode, newNode) on update
     } else {
       elem.appendChild(child);
     }
@@ -71,11 +100,13 @@ export function jsx(...params: unknown[]): Component {
 
   const attrs: Record<string, unknown> = attrs_;
 
-  const newOpts: Record<string, string | (() => void)> = {};
+  const newOpts: Record<string, string | (() => void) | Dyn<string>> = {};
 
   for (const key of Object.keys(attrs)) {
     const val: unknown = attrs[key];
     if (typeof key === "string" && typeof val === "string") {
+      newOpts[key] = val;
+    } else if (typeof key === "string" && val instanceof Dyn) {
       newOpts[key] = val;
     } else if (typeof key === "string" && typeof val === "function") {
       newOpts[key] = () => val();

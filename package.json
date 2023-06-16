@@ -8,11 +8,14 @@
     "build": "tsc && vite build",
     "watch": "tsc --noEmit --watch",
     "preview": "vite preview",
-    "format": "bash -c 'prettier --ignore-path <(cat .gitignore .git/info/exclude) --write .'"
+    "format": "bash -c 'prettier --ignore-path <(cat .gitignore .git/info/exclude) --write .'",
+    "test": "vitest"
   },
   "devDependencies": {
+    "jsdom": "^22.1.0",
     "prettier": "2.8.8",
     "typescript": "^5.0.2",
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "vitest": "^0.32.0"
   }
 }

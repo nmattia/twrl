@@ -1,14 +1,15 @@
 declare global {
   namespace JSX {
     type IntrinsicElements = {
-      div: { class?: string };
+      div: { id?: string; class?: string | Dyn<string> };
+      span: { class?: string };
       a: { href: string; target: string };
       img: { src: string; class: string; alt: string };
       h1: {};
       button: {
         onclick?: () => void; // XXX: @ is not allowed in jsx
         id?: string;
-        type: "button";
+        type?: "button";
       };
       p: { class: string };
     };
@@ -185,7 +186,7 @@ export class Dyn<A> {
   public latest: A;
 
   // private listeners: { keep: () => boolean, f:  (a: A) => void }[] = [];
-  private listeners: WeakRef<{ notify: (a: A) => void }>[] = [];
+  private listeners: { notify: (a: A) => void }[] = [];
 
   protected parent?: unknown;
 
@@ -198,7 +199,7 @@ export class Dyn<A> {
 
   addListener(f: (a: A) => void) {
     this.listeners.push(
-      new WeakRef({
+      ({
         notify: (a: A) => {
           f(a);
         },
@@ -207,17 +208,7 @@ export class Dyn<A> {
   }
 
   send(a: A) {
-    this.listeners = this.listeners.reduce<typeof this.listeners>(
-      (acc, ref) => {
-        const listener = ref.deref();
-        if (listener !== undefined) {
-          listener.notify(a);
-          acc.push(ref);
-        }
-        return acc;
-      },
-      []
-    );
+      this.listeners.forEach(listener => listener.notify(a));
 
     // and set as latest
     this.latest = a;
@@ -228,6 +219,7 @@ export class Dyn<A> {
   ): Dyn<B> {
     const { handleValue, latest } = this.__handleMapOpts(opts);
 
+    // TODO: cleanup
     // Create a chan that the WeakRef can hang on to, but that automatically
     // translates As into Bs
     class MappedDyn extends Dyn<B> {
@@ -236,7 +228,7 @@ export class Dyn<A> {
       }
     }
     const input = new MappedDyn(latest);
-    this.listeners.push(new WeakRef(input));
+    this.listeners.push((input));
     this.parent = input; // keep a ref to prevent parent being garbage collected
     return input;
   }
