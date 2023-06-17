@@ -14,6 +14,18 @@
   -webkit-text-size-adjust: 100%;
 }
 
+.snippet {
+  margin-top: 3em;
+  border: 1px solid gray;
+  border-radius: 1em;
+  padding: 1em;
+}
+
+.showcase {
+  padding: 1em;
+  border-bottom: 1px solid gray;
+}
+
 a {
   font-weight: 500;
   color: #646cff;

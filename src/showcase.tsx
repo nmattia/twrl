@@ -46,8 +46,10 @@ export const page: HTMLElement = (
             $src.send(node);
           });
           return (
-            <div>
-              <C />
+            <div class="snippet">
+              <div class="showcase">
+                <C />
+              </div>
               {$src}
             </div>
           );
