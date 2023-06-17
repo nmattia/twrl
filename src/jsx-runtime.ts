@@ -96,7 +96,7 @@ export function createComponent(
 //              ^ in our case, an HTML element
 //          - the value itself for raw values (<div>{ foo() }</div>)
 //
-export function jsx(...params: unknown[]): HTMLElement {
+export function jsx(...params: unknown[]): Node {
   const [f, props] = params;
 
   if (f === undefined) {

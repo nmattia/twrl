@@ -11,7 +11,7 @@ afterEach(async () => {
 });
 
 it("renders a div", () => {
-  document.body.appendChild(<div></div>);
+  document.body.append(<div></div>);
   expect(document.body.innerHTML).toBe("<div></div>");
 });
 

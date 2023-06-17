@@ -1,4 +1,4 @@
 import "./style.css";
-import { page } from "./paragraph";
+import { page } from "./showcase";
 
 document.querySelector<HTMLDivElement>("#app")!.appendChild(page);

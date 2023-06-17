@@ -1,6 +1,8 @@
 declare global {
   namespace JSX {
     type IntrinsicElements = {
+      pre: { style?: string };
+      code: {};
       div: { id?: string; class?: string | Dyn<string> };
       span: { class?: string };
       a: { href: string; target: string };

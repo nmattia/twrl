@@ -1,33 +1,14 @@
-import { dyn } from "./lib";
 import typescriptLogo from "./typescript.svg";
 import viteLogo from "/vite.svg";
 import type { Component } from "./lib";
+import { Counter } from "./examples/Counter";
+import counterSrc from "./examples/Counter.tsx?raw";
 
-const Counter = dyn(
-  (value) => (
-    <button onclick={() => value.update((x) => x + 1)} type="button">
-      Count is {value}
-    </button>
-  ),
-  0
-);
-
-const names = ["Alice", "Bob", "Chuck"];
-const Greet = dyn(
-  (ix) => (
-    <div>
-      <h1>Hello, {ix.map((ix) => names[ix])} !</h1>
-      <button onclick={() => ix.update((ix) => (ix + 1) % names.length)}>
-        next
-      </button>
-    </div>
-  ),
-  0
-);
+import { Greet } from "./examples/Greet";
+import greetSrc from "./examples/Greet.tsx?raw";
 
 export const page: Component = (
   <div>
-    <Greet />
     <a href="https://vitejs.dev" target="_blank">
       <img src={viteLogo} class="logo" alt="Vite logo" />
     </a>
@@ -37,7 +18,14 @@ export const page: Component = (
     <h1>Vite + TypeScript</h1>
     <div class="card">
       <Counter />
+      <pre style="text-align: left;">
+        <code>{counterSrc}</code>
+      </pre>
     </div>
+    <Greet />
+    <pre style="text-align: left;">
+      <code>{greetSrc}</code>
+    </pre>
     <p class="read-the-docs">
       Click on the Vite and TypeScript logos to learn more
     </p>
