@@ -169,3 +169,5 @@ export function jsx(...params: unknown[]): Node {
 
   return createComponent(f, newOpts, children);
 }
+
+export const jsxs = jsx;

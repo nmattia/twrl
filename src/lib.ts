@@ -13,7 +13,7 @@ declare global {
         id?: string;
         type?: "button";
       };
-      p: { class: string };
+      p: { class?: string };
     };
   }
 }
