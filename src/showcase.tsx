@@ -6,7 +6,10 @@ import counterSrc from "./examples/Counter.tsx?raw";
 import { Greet } from "./examples/Greet";
 import greetSrc from "./examples/Greet.tsx?raw";
 
-const showcasedComponents: { component: () => HTMLElement; src: string }[] = [
+const showcasedComponents: {
+  component: () => HTMLElement;
+  src: string;
+}[] = [
   { component: Counter, src: counterSrc },
   { component: Greet, src: greetSrc },
 ];

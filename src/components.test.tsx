@@ -83,10 +83,14 @@ it("updates reactive attributes", () => {
 
   document.body.appendChild(<div class={clazz}></div>);
   expect(document.querySelector("div")!.classList.contains("nice")).toBe(true);
-  expect(document.querySelector("div")!.classList.contains("ugly")).toBe(false);
+  expect(document.querySelector("div")!.classList.contains("ugly")).toBe(
+    false
+  );
   clazz.send("ugly");
   expect(document.querySelector("div")!.classList.contains("ugly")).toBe(true);
-  expect(document.querySelector("div")!.classList.contains("nice")).toBe(false);
+  expect(document.querySelector("div")!.classList.contains("nice")).toBe(
+    false
+  );
 });
 
 it("updates reactive tree", () => {
