@@ -43,6 +43,17 @@ it.skip("renders a fragment", () => {
   expect(document.body.innerHTML).toBe("hello");
 });
 
+it("renders a list of components", () => {
+  document.body.appendChild(
+    <div>
+      {["hello", "world"].map((str) => (
+        <span>{str}</span>
+      ))}
+    </div>
+  );
+  expect(document.querySelectorAll("span").length).toBe(2);
+});
+
 it("updates reactive text nodes", () => {
   const name = new Dyn("Alice");
 

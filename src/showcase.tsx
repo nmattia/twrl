@@ -1,11 +1,17 @@
 import typescriptLogo from "./typescript.svg";
 import viteLogo from "/vite.svg";
 import type { Component } from "./lib";
+
 import { Counter } from "./examples/Counter";
 import counterSrc from "./examples/Counter.tsx?raw";
 
 import { Greet } from "./examples/Greet";
 import greetSrc from "./examples/Greet.tsx?raw";
+
+const showcasedComponents: { component: () => HTMLElement; src: string }[] = [
+  { component: Counter, src: counterSrc },
+  { component: Greet, src: greetSrc },
+];
 
 export const page: Component = (
   <div>
@@ -16,18 +22,16 @@ export const page: Component = (
       <img src={typescriptLogo} class="logo vanilla" alt="TypeScript logo" />
     </a>
     <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <Counter />
-      <pre style="text-align: left;">
-        <code>{counterSrc}</code>
-      </pre>
-    </div>
-    <Greet />
-    <pre style="text-align: left;">
-      <code>{greetSrc}</code>
-    </pre>
     <p class="read-the-docs">
       Click on the Vite and TypeScript logos to learn more
     </p>
+    {showcasedComponents.map(({ component: Component, src }) => (
+      <div>
+        <Component />
+        <pre style="text-align: left;">
+          <code>{src}</code>
+        </pre>
+      </div>
+    ))}
   </div>
 );

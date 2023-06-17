@@ -142,6 +142,10 @@ export function jsx(...params: unknown[]): Node {
   const children: Child[] = [];
 
   const addChild = (child: unknown) => {
+    if (Array.isArray(child)) {
+      child.forEach(addChild);
+      return;
+    }
     if (
       !(child instanceof Dyn) &&
       !(child instanceof HTMLElement) &&
