@@ -1,6 +1,4 @@
-import typescriptLogo from "./typescript.svg";
-import viteLogo from "/vite.svg";
-import type { Component } from "./lib";
+import logo from "/logo.png";
 
 import { Counter } from "./examples/Counter";
 import counterSrc from "./examples/Counter.tsx?raw";
@@ -13,18 +11,13 @@ const showcasedComponents: { component: () => HTMLElement; src: string }[] = [
   { component: Greet, src: greetSrc },
 ];
 
-export const page: Component = (
+export const page: HTMLElement = (
   <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src={viteLogo} class="logo" alt="Vite logo" />
+    <a href={/* TODO: base url */ "/"}>
+      <img src={logo} class="logo" alt="Twirl logo" />
     </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src={typescriptLogo} class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
+    <h1>Twirl</h1>
+    <p class="read-the-docs">0% magic, 100% performance</p>
     {showcasedComponents.map(({ component: Component, src }) => (
       <div>
         <Component />

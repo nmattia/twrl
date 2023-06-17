@@ -5,7 +5,7 @@ declare global {
       code: {};
       div: { id?: string; class?: string | Dyn<string> };
       span: { class?: string };
-      a: { href: string; target: string };
+      a: { href: string; target?: "_blank" };
       img: { src: string; class: string; alt: string };
       h1: {};
       button: {
@@ -181,13 +181,15 @@ export class Dyn<A> {
 
   private listeners: ((a: A) => void)[] = [];
 
-  protected parent?: unknown;
-
   static readonly unchanged = Symbol("unchanged");
 
   // Constructor with latest which is "initial" and then latest
-  constructor(initial: A) {
+  constructor(initial: A, listeners?: Dyn<A>["listeners"]) {
+    if (listeners !== undefined) {
+      this.listeners = listeners;
+    }
     this.latest = initial;
+    this.send(initial); // latest will be set twice but we don't care
   }
 
   addListener(f: (a: A) => void) {
@@ -206,11 +208,13 @@ export class Dyn<A> {
   ): Dyn<B> {
     const { handleValue, latest } = this.__handleMapOpts(opts);
 
+    // XXX: undefined because we .send() the latest later
     const input = new Dyn<B>(latest);
+
     this.listeners.push((value: A) =>
       handleValue({ send: (a: B) => input.send(a), value })
     );
-    this.parent = input; // keep a ref to prevent parent being garbage collected
+
     return input;
   }
 

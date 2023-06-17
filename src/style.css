@@ -44,16 +44,13 @@ h1 {
 }
 
 .logo {
-  height: 6em;
+  height: 8em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #3178c6aa);
+  filter: drop-shadow(0 0 2em #c1f3d6);
 }
 
 .card {
