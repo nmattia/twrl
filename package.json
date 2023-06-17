@@ -17,5 +17,8 @@
     "typescript": "^5.0.2",
     "vite": "^4.3.9",
     "vitest": "^0.32.0"
+  },
+  "dependencies": {
+    "shiki": "^0.14.2"
   }
 }

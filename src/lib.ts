@@ -263,3 +263,11 @@ export function dyn<T>(
     return f(value);
   };
 }
+
+export function dyn_<T>(
+  f: (value: Dyn<T>) => Component,
+  initial: T
+): Component {
+  const value = new Dyn(initial);
+  return f(value);
+}

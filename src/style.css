@@ -43,6 +43,10 @@ h1 {
   text-align: center;
 }
 
+pre {
+  text-align: left;
+}
+
 .logo {
   height: 8em;
   padding: 1.5em;
