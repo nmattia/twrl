@@ -4,7 +4,7 @@ import { getHighlighter } from "shiki";
 export default function shiki() {
   return {
     name: "shiki",
-    resolveId: (source: string) => {
+    resolveId(source: string) {
       if (source.endsWith("?shiki")) {
         return source;
       }
@@ -27,7 +27,7 @@ export default function shiki() {
 
         return `export default ${JSON.stringify(highlighted)}`;
       }
-      return null; // other ids should be handled as usually
+      return null;
     },
   };
 }
