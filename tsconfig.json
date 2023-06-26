@@ -21,7 +21,8 @@
 
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["./plugins/shiki.d.ts"]
   },
-  "include": ["src"]
+  "include": ["src", "plugins"]
 }

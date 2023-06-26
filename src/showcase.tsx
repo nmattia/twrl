@@ -1,10 +1,10 @@
 import logo from "/logo.png";
 
 import { Counter } from "./examples/Counter";
-import counterSrc from "./examples/Counter.tsx?raw";
+import counterSrc from "./examples/Counter.tsx?shiki";
 
 import { Greet } from "./examples/Greet";
-import greetSrc from "./examples/Greet.tsx?raw";
+import greetSrc from "./examples/Greet.tsx?shiki";
 
 type Example = {
   component: () => HTMLElement;
@@ -28,9 +28,7 @@ export const page: HTMLElement = (
         <div class="showcase">
           <C />
         </div>
-        <pre style="text-align: left;">
-          <code>{src}</code>
-        </pre>
+        <div style="text-align: left;" innerHTML={src}></div>
       </div>
     ))}
   </div>

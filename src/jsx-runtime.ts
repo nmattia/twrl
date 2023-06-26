@@ -11,7 +11,11 @@ export function createIntrinsicComponent(
   for (const key in attrs) {
     const val = attrs[key];
     if (typeof val === "string") {
-      elem.setAttribute(key, val);
+      if (key === "innerHTML") {
+        elem.innerHTML = val;
+      } else {
+        elem.setAttribute(key, val);
+      }
     } else if (val instanceof Dyn) {
       const setAttr = (a: unknown) => {
         if (typeof a === "string") {
