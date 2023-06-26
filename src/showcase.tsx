@@ -6,6 +6,9 @@ import counterSrc from "./examples/Counter.tsx?shiki";
 import { Greet } from "./examples/Greet";
 import greetSrc from "./examples/Greet.tsx?shiki";
 
+import { GreetInput } from "./examples/GreetInput";
+import greetInputSrc from "./examples/GreetInput.tsx?shiki";
+
 type Example = {
   component: () => HTMLElement;
   src: string;
@@ -14,6 +17,7 @@ type Example = {
 const showcasedComponents: Example[] = [
   { component: Counter, src: counterSrc },
   { component: Greet, src: greetSrc },
+  { component: GreetInput, src: greetInputSrc },
 ];
 
 export const page: HTMLElement = (

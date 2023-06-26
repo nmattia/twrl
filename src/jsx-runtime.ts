@@ -1,4 +1,4 @@
-import { Dyn } from "./lib";
+import { Trigger, Dyn } from "./lib";
 
 type Child = string | Dyn<string> | HTMLElement;
 
@@ -16,6 +16,15 @@ export function createIntrinsicComponent(
       } else {
         elem.setAttribute(key, val);
       }
+    } else if (key === "inputTrigger") {
+      if (!(val instanceof Trigger)) {
+        throw new Error("not a trigger");
+      }
+
+      elem.addEventListener("input", () => {
+        // TODO: how to ensure this is an 'HTMLInputElement'?
+        val.send((elem as HTMLInputElement).value);
+      });
     } else if (val instanceof Dyn) {
       const setAttr = (a: unknown) => {
         if (typeof a === "string") {
