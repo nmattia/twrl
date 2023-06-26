@@ -18,7 +18,7 @@ const showcasedComponents: Example[] = [
 
 export const page: HTMLElement = (
   <div>
-    <a href={/* TODO: base url */ "/"}>
+    <a href={import.meta.env.BASE_URL}>
       <img src={logo} class="logo" alt="Twirl logo" />
     </a>
     <h1>Twirl</h1>
