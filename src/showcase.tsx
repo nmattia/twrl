@@ -27,13 +27,15 @@ export const page: HTMLElement = (
     </a>
     <h1>Twirl</h1>
     <p class="read-the-docs">0% magic, 100% performance</p>
-    {showcasedComponents.map(({ component: C, src }) => (
-      <div class="snippet">
-        <div class="showcase">
-          <C />
+    <div>
+      {showcasedComponents.map(({ component: C, src }) => (
+        <div class="snippet">
+          <div class="showcase">
+            <C />
+          </div>
+          <div style="text-align: left;" innerHTML={src}></div>
         </div>
-        <div style="text-align: left;" innerHTML={src}></div>
-      </div>
-    ))}
+      ))}
+    </div>
   </div>
 );

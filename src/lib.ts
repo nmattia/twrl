@@ -1,5 +1,31 @@
+type Child =
+  | string
+  | number
+  | HTMLElement
+  | Dyn<string>
+  | Dyn<number>
+  | Dyn<HTMLElement>;
+type Children = Child | Child[];
+
 declare global {
   namespace JSX {
+    type Element = HTMLElement;
+
+    type ElementChildrenAttribute = {
+      children: {};
+    };
+
+    type ElementType =
+      | "div"
+      | "h1"
+      | "p"
+      | "a"
+      | "img"
+      | "input"
+      | "button"
+      | "span"
+      | (() => HTMLElement);
+
     type IntrinsicElements = {
       pre: { style?: string };
       code: {};
@@ -8,17 +34,28 @@ declare global {
         innerHTML?: string;
         id?: string;
         class?: string | Dyn<string>;
+        children?: Children;
       };
-      span: { class?: string };
-      a: { href: string; target?: "_blank" };
+      span: {
+        class?: string;
+
+        children?: Children;
+      };
+      a: {
+        href: string;
+        target?: "_blank";
+
+        children?: Children;
+      };
       img: { src: string; class: string; alt: string };
       h1: {};
       button: {
         onclick?: () => void; // XXX: @ is not allowed in jsx
         id?: string;
         type?: "button";
+        children?: Children;
       };
-      p: { class?: string };
+      p: { class?: string; children?: Children };
       input: { inputTrigger: Trigger<string> };
     };
   }
