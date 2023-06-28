@@ -1,30 +1,161 @@
 import { Trigger, Dyn } from "./lib";
 
-type Child = string | Dyn<string> | HTMLElement;
+type Child =
+  | string
+  | number
+  | HTMLElement
+  | Dyn<string>
+  | Dyn<number>
+  | Dyn<HTMLElement>;
+type Children = Child | Child[];
+
+type Properties = {
+  inputTrigger: {
+    tags: "input";
+    propertyTypes: Trigger<string>;
+    elementTypes: HTMLInputElement;
+  };
+  innerHTML: {
+    tags: "input";
+    propertyTypes: string | Dyn<string>;
+    elementTypes: HTMLElement;
+  };
+};
+
+type HTMLGlobalAttributes = ["id", "itemprop", "lang", "class", "style"];
+
+type TwirlGlobalAttributes = {
+  innerHTML?: string | Dyn<string>;
+  children?: Children; // TODO: not all tags should have children
+};
+
+type TwirlCustomAttributes = {
+  input: {
+    inputTrigger: Trigger<string>;
+  };
+  button: {
+    onclick: () => void;
+  };
+  img: {
+    src: string;
+    alt: string;
+  };
+  a: {
+    href: string;
+  };
+};
+
+type Elements = {
+  [Tag in keyof HTMLElementTagNameMap]: {
+    elementType: HTMLElementTagNameMap[Tag];
+    attributes: {
+      [Attr in HTMLGlobalAttributes[number]]?: string | Dyn<string>;
+    } & TwirlGlobalAttributes &
+      (Tag extends keyof TwirlCustomAttributes
+        ? TwirlCustomAttributes[Tag]
+        : {});
+  };
+};
+
+declare global {
+  namespace JSX {
+    type Element = HTMLElement;
+    type ElementChildrenAttribute = { children: {} };
+    type ElementType = keyof HTMLElementTagNameMap | (() => HTMLElement);
+
+    type IntrinsicElements = {
+      [Tag in keyof Elements]: Elements[Tag]["attributes"];
+    };
+  }
+}
+
+(<Elements["div"]["elementType"]>(undefined as any)) satisfies HTMLElement;
+(<Elements["div"]["elementType"]>(undefined as any)) satisfies HTMLDivElement;
+
+// @ts-expect-error
+// prettier-ignore
+(<Elements["div"]["elementType"]>( (undefined as any))) satisfies HTMLInputElement;
+
+(<Elements["div"]["attributes"]["innerHTML"]>(undefined as any)) satisfies
+  | undefined
+  | string
+  | Dyn<string>;
+(<Elements["input"]["attributes"]["inputTrigger"]>(
+  (undefined as any)
+)) satisfies Trigger<string> | undefined;
+
+type Tags = JSX.IntrinsicElements;
+
+type TagsWithProperty<P extends string> = keyof {
+  [Key in keyof Tags as Tags[Key] extends Record<P, {}> ? Key : never]: any;
+};
+
+export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
+  T
+>() => T extends Y ? 1 : 2
+  ? true
+  : false;
+
+type PropType<P extends string> = {
+  [Tag in keyof Elements]: Elements[Tag]["attributes"] extends {
+    [_ in P]?: infer T;
+  }
+    ? T
+    : never;
+}[keyof Elements];
+(<PropType<"innerHTML">>(undefined as any)) satisfies string | Dyn<string>;
+
+// @ts-expect-error
+(<PropType<"innerHTML">>(undefined as any)) satisfies never;
+
+(<string>(undefined as any)) satisfies PropType<"innerHTML">;
+
+(<PropType<"innerHTML">>(undefined as any)) satisfies unknown;
+
+(<Equals<PropType<"innerHTML">, string | Dyn<string>>>(
+  (undefined as any)
+)) satisfies true;
+
+// @ts-expect-error
+(<PropType<"innerHTML">>(undefined as any)) satisfies number;
 
 export function createIntrinsicComponent(
   tag: string,
+  // TODO: Record<string, unknown> and assert locally
   attrs: Record<string, string | (() => void) | Dyn<string>>
 ): HTMLElement {
-  const elem = document.createElement(tag);
+  const elem_ = document.createElement(tag);
+  const elem = elem_;
+
+  (<TagsWithProperty<"innerHTML">>(undefined as any)) satisfies "div";
 
   for (const key in attrs) {
     const val = attrs[key];
-    if (typeof val === "string") {
+    if (key === "innerHTML") {
+      const elem = elem_; // TODO: narrow element based on key type
+      const val = attrs[key] as PropType<typeof key>;
+      if (val instanceof Dyn) {
+        elem.innerHTML = val.latest;
+        val.addListener((a) => {
+          elem.innerHTML = a;
+        });
+      } else {
+        elem.innerHTML = val;
+      }
+    } else if (key === "inputTrigger") {
+      // TODO: get rid of Properties, use Elements instead
+      type Elem = Properties[typeof key]["elementTypes"];
+      type Val = Properties[typeof key]["propertyTypes"];
+
+      (<Elem>elem).addEventListener("input", () => {
+        (<Val>val).send((<Elem>elem).value);
+      });
+    } else if (typeof val === "string") {
       if (key === "innerHTML") {
         elem.innerHTML = val;
       } else {
         elem.setAttribute(key, val);
       }
-    } else if (key === "inputTrigger") {
-      if (!(val instanceof Trigger)) {
-        throw new Error("not a trigger");
-      }
-
-      elem.addEventListener("input", () => {
-        // TODO: how to ensure this is an 'HTMLInputElement'?
-        val.send((elem as HTMLInputElement).value);
-      });
     } else if (val instanceof Dyn) {
       const setAttr = (a: unknown) => {
         if (typeof a === "string") {
