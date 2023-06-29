@@ -1,10 +1,5 @@
-import { dyn } from "../lib";
+import { trigger } from "../lib";
 
-export const Counter = dyn(
-  (count) => (
-    <button onclick={() => count.update((x) => x + 1)}>
-      Count is {count}
-    </button>
-  ),
-  0
-);
+export const Counter = trigger((click) => (
+  <button clickTrigger={click}>Count is {click.track((x) => x + 1, 0)}</button>
+));

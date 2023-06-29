@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { vi, expect, it } from "vitest";
-import { Dyn } from "./lib";
+import { Dyn, Trigger } from "./lib";
 
 import { afterEach } from "vitest";
 
@@ -120,7 +120,10 @@ it("updates reactive tree", () => {
 it("triggers click handlers", () => {
   const fn = vi.fn();
 
-  document.body.appendChild(<button onclick={() => fn()}></button>);
+  const click = new Trigger(null);
+  click.addListener(() => fn());
+
+  document.body.appendChild(<button clickTrigger={click}></button>);
   expect(fn).toHaveBeenCalledTimes(0);
   document.querySelector("button")!.click();
   expect(fn).toHaveBeenCalledTimes(1);

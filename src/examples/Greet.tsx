@@ -1,15 +1,13 @@
-import { dyn } from "../lib";
+import { trigger } from "../lib";
 
 const names = ["Alice", "Bob", "Chuck"];
 
-export const Greet = dyn(
-  (ix) => (
-    <div>
-      <p>Hello, {ix.map((ix) => names[ix])} !</p>
-      <button onclick={() => ix.update((ix) => (ix + 1) % names.length)}>
-        next
-      </button>
-    </div>
-  ),
-  0
-);
+const inc = (ix: number) => (ix + 1) % names.length;
+const getName = (ix: number) => names[ix];
+
+export const Greet = trigger((click) => (
+  <div>
+    <p>Hello, {click.track(inc, 0).map(getName)} !</p>
+    <button clickTrigger={click}>next</button>
+  </div>
+));

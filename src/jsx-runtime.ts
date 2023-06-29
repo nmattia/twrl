@@ -21,7 +21,7 @@ type TwirlCustomAttributes = {
     inputTrigger: Trigger<string>;
   };
   button: {
-    onclick: () => void;
+    clickTrigger?: Trigger<null>;
   };
   img: {
     src: string;
@@ -106,7 +106,7 @@ type ElemType<P extends string> = {
   [Tag in keyof Elements]: Elements[Tag]["attributes"] extends {
     [_ in P]?: any;
   }
-    ? HTMLElementTagNameMap[Tag]
+    ? Elements[Tag]["elementType"]
     : never;
 }[keyof Elements];
 
@@ -118,34 +118,53 @@ type ElemType<P extends string> = {
 (<ElemType<"href">>(undefined as any)) satisfies HTMLAnchorElement;
 (<HTMLAnchorElement>(undefined as any)) satisfies ElemType<"href">;
 
+const handleProperty = {
+  innerHTML: (elem: HTMLElement, val: string | Dyn<string>) => {
+    if (val instanceof Dyn) {
+      elem.innerHTML = val.latest;
+      val.addListener((a) => {
+        elem.innerHTML = a;
+      });
+    } else {
+      elem.innerHTML = val;
+    }
+  },
+  inputTrigger: (elem: HTMLInputElement, val: Trigger<string>) => {
+    elem.addEventListener("input", () => {
+      val.send(elem.value);
+    });
+  },
+  clickTrigger: (elem: HTMLButtonElement, val: Trigger<null>) => {
+    elem.addEventListener("click", () => {
+      val.send(null);
+    });
+  },
+} as const;
+
 export function createIntrinsicComponent(
   tag: string,
-  // TODO: Record<string, unknown> and assert locally
-  attrs: Record<string, string | (() => void) | Dyn<string>>
+  attrs: Record<string, unknown>
 ): HTMLElement {
   const elem_ = document.createElement(tag);
-  const elem = elem_;
 
   for (const key in attrs) {
     if (key === "innerHTML") {
-      const elem = elem_ as ElemType<typeof key>;
-      const val = attrs[key] as PropType<typeof key>;
-      if (val instanceof Dyn) {
-        elem.innerHTML = val.latest;
-        val.addListener((a) => {
-          elem.innerHTML = a;
-        });
-      } else {
-        elem.innerHTML = val;
-      }
+      handleProperty["innerHTML"](
+        elem_ as ElemType<typeof key>,
+        attrs[key] as PropType<typeof key>
+      );
     } else if (key === "inputTrigger") {
-      const elem = elem_ as ElemType<typeof key>;
-      const val = attrs[key] as PropType<typeof key>;
-
-      elem.addEventListener("input", () => {
-        val.send(elem.value);
-      });
+      handleProperty["inputTrigger"](
+        elem_ as ElemType<typeof key>,
+        attrs[key] as PropType<typeof key>
+      );
+    } else if (key === "clickTrigger") {
+      handleProperty["clickTrigger"](
+        elem_ as ElemType<typeof key>,
+        attrs[key] as PropType<typeof key>
+      );
     } else {
+      // TODO: remove casts
       const elem = elem_ as ElemType<typeof key>;
       const val = attrs[key] as PropType<typeof key>;
 
@@ -175,7 +194,7 @@ export function createIntrinsicComponent(
     }
   }
 
-  return elem;
+  return elem_;
 }
 
 export function createComponent(

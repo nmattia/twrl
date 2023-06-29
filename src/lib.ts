@@ -95,7 +95,7 @@ export function dyn_<T>(
   return f(value);
 }
 
-export function trigger<T>(
+export function trigger<T = null>(
   f: (value: Trigger<T>) => Component
 ): () => Component {
   return () => {
@@ -110,6 +110,17 @@ export class Trigger<A> extends Dyn<A | undefined> {
 
     this.addListener(() => {
       n.send(d.latest);
+    });
+
+    return n;
+  }
+
+  track<B>(f: (b: B, a: A) => B, initial: B): Dyn<B> {
+    const n = new Dyn<B>(initial);
+
+    // TODO: a should not be undefined on Trigger "notify"
+    this.addListener((a) => {
+      n.send(f(n.latest, a!));
     });
 
     return n;
