@@ -9,19 +9,6 @@ type Child =
   | Dyn<HTMLElement>;
 type Children = Child | Child[];
 
-type Properties = {
-  inputTrigger: {
-    tags: "input";
-    propertyTypes: Trigger<string>;
-    elementTypes: HTMLInputElement;
-  };
-  innerHTML: {
-    tags: "input";
-    propertyTypes: string | Dyn<string>;
-    elementTypes: HTMLElement;
-  };
-};
-
 type HTMLGlobalAttributes = ["id", "itemprop", "lang", "class", "style"];
 
 type TwirlGlobalAttributes = {
@@ -96,6 +83,7 @@ export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
   ? true
   : false;
 
+// Look up property type based on property name
 type PropType<P extends string> = {
   [Tag in keyof Elements]: Elements[Tag]["attributes"] extends {
     [_ in P]?: infer T;
@@ -119,6 +107,23 @@ type PropType<P extends string> = {
 // @ts-expect-error
 (<PropType<"innerHTML">>(undefined as any)) satisfies number;
 
+// Look up element type based on property name
+type ElemType<P extends string> = {
+  [Tag in keyof Elements]: Elements[Tag]["attributes"] extends {
+    [_ in P]?: any;
+  }
+    ? HTMLElementTagNameMap[Tag]
+    : never;
+}[keyof Elements];
+
+// 'innerHTML' should be available on all element types
+(<ElemType<"innerHTML">>(undefined as any)) satisfies HTMLElement;
+(<HTMLElement>(undefined as any)) satisfies ElemType<"innerHTML">;
+
+// 'href' should only be available on anchor elements (<a></a>)
+(<ElemType<"href">>(undefined as any)) satisfies HTMLAnchorElement;
+(<HTMLAnchorElement>(undefined as any)) satisfies ElemType<"href">;
+
 export function createIntrinsicComponent(
   tag: string,
   // TODO: Record<string, unknown> and assert locally
@@ -130,9 +135,9 @@ export function createIntrinsicComponent(
   (<TagsWithProperty<"innerHTML">>(undefined as any)) satisfies "div";
 
   for (const key in attrs) {
-    const val = attrs[key];
+    // const val = attrs[key];
     if (key === "innerHTML") {
-      const elem = elem_; // TODO: narrow element based on key type
+      const elem = elem_ as ElemType<typeof key>;
       const val = attrs[key] as PropType<typeof key>;
       if (val instanceof Dyn) {
         elem.innerHTML = val.latest;
@@ -143,32 +148,39 @@ export function createIntrinsicComponent(
         elem.innerHTML = val;
       }
     } else if (key === "inputTrigger") {
-      // TODO: get rid of Properties, use Elements instead
-      type Elem = Properties[typeof key]["elementTypes"];
-      type Val = Properties[typeof key]["propertyTypes"];
+      const elem = elem_ as ElemType<typeof key>;
+      const val = attrs[key] as PropType<typeof key>;
 
-      (<Elem>elem).addEventListener("input", () => {
-        (<Val>val).send((<Elem>elem).value);
-      });
-    } else if (typeof val === "string") {
-      if (key === "innerHTML") {
-        elem.innerHTML = val;
-      } else {
-        elem.setAttribute(key, val);
-      }
-    } else if (val instanceof Dyn) {
-      const setAttr = (a: unknown) => {
-        if (typeof a === "string") {
-          elem.setAttribute(key, a);
-        } // TODO: else: handle
-      };
-      setAttr(val.latest);
-      val.addListener((a) => {
-        setAttr(a);
+      elem.addEventListener("input", () => {
+        val.send(elem.value);
       });
     } else {
-      const eventName = key.slice(2); // drop "on"
-      elem.addEventListener(eventName, val);
+      const elem = elem_ as ElemType<typeof key>;
+      const val = attrs[key] as PropType<typeof key>;
+
+      if (typeof val === "string") {
+        if (key === "innerHTML") {
+          elem.innerHTML = val;
+        } else {
+          elem.setAttribute(key, val);
+        }
+      } else if (val instanceof Dyn) {
+        const setAttr = (a: unknown) => {
+          if (typeof a === "string") {
+            elem.setAttribute(key, a);
+          } // TODO: else: handle
+        };
+        setAttr(val.latest);
+        val.addListener((a) => {
+          setAttr(a);
+        });
+      } else if (typeof val === "function") {
+        // TODO: use triggers everywhere for events
+        const eventName = key.slice(2); // drop "on"
+        elem.addEventListener(eventName, val);
+      } else {
+        throw new Error("Unknown attribute: " + key + ", " + val);
+      }
     }
   }
 
