@@ -115,6 +115,33 @@ export function trigger<T = null>(
 }
 
 export class Trigger<A> extends Dyn<A | undefined> {
+  static asyncTrigger<A>(gen: AsyncGenerator<A>) {
+    const n = new Trigger<A>(undefined);
+    (async () => {
+      while (true) {
+        const result = await gen.next();
+
+        if (result.done) {
+          return;
+        }
+
+        n.send(result.value);
+      }
+    })();
+
+    return n;
+  }
+
+  static gen<A>(f: () => Promise<A>): Trigger<A> {
+    return Trigger.asyncTrigger<A>(
+      (async function* () {
+        while (true) {
+          yield await f();
+        }
+      })()
+    );
+  }
+
   read<B>(d: Dyn<B>): Trigger<B> {
     const n = new Trigger<B>(undefined);
 

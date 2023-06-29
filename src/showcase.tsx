@@ -12,6 +12,9 @@ import greetInputSrc from "./examples/GreetInput.tsx?shiki";
 import { GreetInputButton } from "./examples/GreetInputButton";
 import greetInputButtonSrc from "./examples/GreetInputButton.tsx?shiki";
 
+import { ElapsedTimer } from "./examples/ElapsedTimer";
+import elapsedTimerSrc from "./examples/ElapsedTimer.tsx?shiki";
+
 type Example = {
   component: () => HTMLElement;
   src: string;
@@ -22,6 +25,7 @@ const showcasedComponents: Example[] = [
   { component: Greet, src: greetSrc },
   { component: GreetInput, src: greetInputSrc },
   { component: GreetInputButton, src: greetInputButtonSrc },
+  { component: ElapsedTimer, src: elapsedTimerSrc },
 ];
 
 export const page: HTMLElement = (
