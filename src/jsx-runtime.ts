@@ -71,12 +71,6 @@ declare global {
   (undefined as any)
 )) satisfies Trigger<string> | undefined;
 
-type Tags = JSX.IntrinsicElements;
-
-type TagsWithProperty<P extends string> = keyof {
-  [Key in keyof Tags as Tags[Key] extends Record<P, {}> ? Key : never]: any;
-};
-
 export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
   T
 >() => T extends Y ? 1 : 2
@@ -132,10 +126,7 @@ export function createIntrinsicComponent(
   const elem_ = document.createElement(tag);
   const elem = elem_;
 
-  (<TagsWithProperty<"innerHTML">>(undefined as any)) satisfies "div";
-
   for (const key in attrs) {
-    // const val = attrs[key];
     if (key === "innerHTML") {
       const elem = elem_ as ElemType<typeof key>;
       const val = attrs[key] as PropType<typeof key>;
