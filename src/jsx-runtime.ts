@@ -18,7 +18,8 @@ type TwirlGlobalAttributes = {
 
 type TwirlCustomAttributes = {
   input: {
-    inputTrigger: Trigger<string>;
+    inputTrigger?: Trigger<string>;
+    inputDyn?: Dyn<string>;
   };
   button: {
     clickTrigger?: Trigger<null>;
@@ -134,6 +135,11 @@ const handleProperty = {
       val.send(elem.value);
     });
   },
+  inputDyn: (elem: HTMLInputElement, val: Dyn<string>) => {
+    elem.addEventListener("input", () => {
+      val.send(elem.value);
+    });
+  },
   clickTrigger: (elem: HTMLButtonElement, val: Trigger<null>) => {
     elem.addEventListener("click", () => {
       val.send(null);
@@ -160,6 +166,11 @@ export function createIntrinsicComponent(
       );
     } else if (key === "clickTrigger") {
       handleProperty["clickTrigger"](
+        elem_ as ElemType<typeof key>,
+        attrs[key] as PropType<typeof key>
+      );
+    } else if (key === "inputDyn") {
+      handleProperty["inputDyn"](
         elem_ as ElemType<typeof key>,
         attrs[key] as PropType<typeof key>
       );

@@ -20,6 +20,16 @@ export class Dyn<A> {
     this.listeners.push(f);
   }
 
+  block(t: Trigger<null>): Dyn<A> {
+    const d = new Dyn<A>(this.latest);
+
+    t.addListener(() => {
+      d.send(this.latest);
+    });
+
+    return d;
+  }
+
   send(a: A) {
     this.listeners.forEach((listener) => listener(a));
 
