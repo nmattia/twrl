@@ -1,5 +1,21 @@
 export type Component = HTMLElement;
 
+export function dyngen<A>(
+  update: (args: A) => Promise<A>,
+  initial: A
+): Dyn<A> {
+  const d = new Dyn(initial);
+
+  (async () => {
+    while (true) {
+      const val = await update(d.latest);
+      d.send(val);
+    }
+  })();
+
+  return d;
+}
+
 export class Dyn<A> {
   public latest: A;
 
