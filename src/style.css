@@ -1,20 +1,143 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+/** Reset */
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.read-the-docs span::after {
+* {
+  margin: 0;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/** Design tokens */
+
+:root {
+  --clr-text: hsl(206, 62%, 5%);
+  --clr-background: hsl(200, 60%, 99%);
+  --clr-primary: hsl(325, 63%, 76%);
+  --clr-secondary: hsl(204, 61%, 92%);
+  --clr-accent: hsl(85, 63%, 76%);
+
+  --ff-base: "Nunito", sans-serif; /* body, etc */
+  --ff-accent: "Roboto", sans-serif; /* headings */
+  --ff-mono: monospace;
+
+  /* https://utopia.fyi/ */
+  --fs-0: clamp(1.13rem, calc(1.08rem + 0.22vw), 1.25rem);
+  --fs-1: clamp(1.35rem, calc(1.2rem + 0.73vw), 1.77rem);
+  --fs-2: clamp(1.62rem, calc(1.31rem + 1.53vw), 2.5rem);
+  --fs-3: clamp(1.94rem, calc(1.39rem + 2.77vw), 3.53rem);
+  --fs-4: clamp(2.33rem, calc(1.41rem + 4.63vw), 5rem);
+  --fs-5: clamp(2.8rem, calc(1.32rem + 7.42vw), 7.07rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --clr-text: hsl(200, 60%, 99%);
+    --clr-background: hsl(206, 62%, 5%);
+    --clr-primary: hsl(325, 63%, 76%);
+    --clr-secondary: hsl(204, 61%, 17%);
+    --clr-accent: hsl(85, 63%, 76%);
+  }
+}
+
+/** General styling */
+
+body {
+  font-size: var(--fs-1);
+  font-family: var(--ff-base);
+  line-height: 1.6;
+  color: var(--clr-text);
+  background: var(--clr-background);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--ff-accent);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+h1 {
+  --flow-space: 2em;
+  font-size: var(--fs-4);
+  color: var(--clr-primary);
+}
+
+h2 {
+  --flow-space: 1.5em;
+  font-size: var(--fs-3);
+}
+
+h3 {
+  font-size: var(--fs-2);
+}
+
+a {
+  color: var(--clr-primary);
+}
+
+a:hover,
+a:focus {
+  color: var(--clr-accent);
+}
+
+.snippet {
+  border: 20px solid var(--clr-accent);
+  border-radius: 5px;
+  padding: 1em;
+}
+
+pre {
+  border: 4px solid var(--clr-primary);
+  overflow-x: scroll;
+  padding: 0.6em;
+}
+pre code {
+  font-size: var(--fs-0);
+}
+
+.wrapper {
+  width: min(100% - 3rem, 50ch);
+  margin-inline: auto;
+}
+
+/* Add margins inter blocks (top margin on all except first */
+.flow > * + * {
+  margin-top: var(--flow-space, 1em);
+}
+
+/** Custom elements */
+
+.title__container {
+  text-align: center;
+  display: block;
+}
+
+.title__text {
+  font-size: var(--fs-5);
+  font-weight: 700;
+  margin: auto;
+  background: linear-gradient(120deg, var(--clr-primary), var(--clr-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Blinking cursor animation */
+.blink span::after {
   content: "";
   border-right: 1px solid black;
   animation: blink 1s linear infinite;
@@ -30,100 +153,5 @@
   }
   100% {
     opacity: 1;
-  }
-}
-
-.snippet {
-  margin-top: 3em;
-  border: 1px solid gray;
-  border-radius: 1em;
-  padding: 1em;
-}
-
-.showcase {
-  padding: 1em;
-  border-bottom: 1px solid gray;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-pre {
-  text-align: left;
-}
-
-.logo {
-  height: 8em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #c1f3d6);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
   }
 }

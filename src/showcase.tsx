@@ -31,7 +31,7 @@ const showcasedComponents: Example[] = [
 ];
 
 export const Changing = () => {
-  const words = ["Performance", "Correctness", "Magic"];
+  const words = ["Performance.", "Correctness.", "Magical."];
 
   const fn = async ({
     current,
@@ -72,23 +72,42 @@ export const Changing = () => {
 };
 
 export const page: HTMLElement = (
-  <div>
-    <a href={import.meta.env.BASE_URL}>
-      <img src={logo} class="logo" alt="Twirl logo" />
-    </a>
-    <h1>Twirl</h1>
-    <p class="read-the-docs">
-      <Changing />
-    </p>
-    <div>
-      {showcasedComponents.map(({ component: C, src }) => (
-        <div class="snippet">
-          <div class="showcase">
-            <C />
+  <main>
+    <article class="wrapper flow">
+      <a href={import.meta.env.BASE_URL}>
+        <img
+          style="max-width: 200px; margin: auto;"
+          src={logo}
+          class="logo"
+          alt="Twirl logo"
+        />
+      </a>
+      <h1 class="title__container">
+        <span class="title__text">
+          &lt;Twir<span style="font-style: oblique;">l</span>&gt;
+        </span>
+      </h1>
+      <p class="blink"></p>
+
+      <p>
+        <a href="https://github.com/nmattia/twirl">Twirl</a> is a JavaScript
+        framework for building highly reactive apps and components.
+      </p>
+      <p class="blink">
+        <Changing />
+      </p>
+
+      <h2>Examples</h2>
+      <div class="flow">
+        {showcasedComponents.map(({ component: C, src }) => (
+          <div class="snippet">
+            <div class="showcase">
+              <C />
+            </div>
+            <div style="text-align: left;" innerHTML={src}></div>
           </div>
-          <div style="text-align: left;" innerHTML={src}></div>
-        </div>
-      ))}
-    </div>
-  </div>
+        ))}
+      </div>
+    </article>
+  </main>
 );

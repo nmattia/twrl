@@ -13,18 +13,18 @@ Work in progress :)
 Here is an example, written in tsx:
 
 ```tsx
-const Counter = trigger(click =>
-  <button clickTrigger={click}>
-    Count is {click.track((x) => x + 1, 0)}
-  </button>
+const Counter = trigger((click) => (
+  <button clickTrigger={click}>Count is {click.track((x) => x + 1, 0)}</button>
+));
+
+document.body.append(
+  <div>
+    Here is a counter: <Counter />
+  </div>
 );
-
-
-document.body.append(<div>Here is a counter: <Counter/></div>)
 ```
 
 For more examples, see [./src/examples](./src/examples) and [twirljs.dev](https://twirljs.dev).
-
 
 ## Hacking
 

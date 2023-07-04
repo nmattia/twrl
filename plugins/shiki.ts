@@ -21,9 +21,19 @@ export default function shiki() {
         const highlighter = await getHighlighter({
           theme: "github-light",
         });
-        const highlighted = await highlighter.codeToHtml(content.toString(), {
-          lang: ext,
-        });
+
+        const lightContent = content
+          .toString()
+          .split("\n")
+          .filter((line) => !line.includes("prettier-ignore"))
+          .map(line => line.replace("../lib", "twirl"))
+          .join("\n");
+        const highlighted = await highlighter.codeToHtml(
+          lightContent.toString(),
+          {
+            lang: ext,
+          }
+        );
 
         return `export default ${JSON.stringify(highlighted)}`;
       }
