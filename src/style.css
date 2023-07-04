@@ -26,9 +26,9 @@ img {
 :root {
   --clr-text: hsl(206, 62%, 5%);
   --clr-background: hsl(200, 60%, 99%);
-  --clr-primary: hsl(325, 63%, 76%);
+  --clr-primary: hsl(235, 73%, 73%);
+  --clr-accent: hsl(125, 83%, 74%);
   --clr-secondary: hsl(204, 61%, 92%);
-  --clr-accent: hsl(85, 63%, 76%);
 
   --ff-base: "Nunito", sans-serif; /* body, etc */
   --ff-accent: "Roboto", sans-serif; /* headings */
@@ -47,9 +47,9 @@ img {
   :root {
     --clr-text: hsl(200, 60%, 99%);
     --clr-background: hsl(206, 62%, 5%);
-    --clr-primary: hsl(325, 63%, 76%);
+    --clr-accent: hsl(235, 73%, 73%);
+    --clr-primary: hsl(125, 83%, 74%);
     --clr-secondary: hsl(204, 61%, 17%);
-    --clr-accent: hsl(85, 63%, 76%);
   }
 }
 
@@ -72,7 +72,6 @@ h3 {
 }
 
 h1 {
-  --flow-space: 2em;
   font-size: var(--fs-4);
   color: var(--clr-primary);
 }

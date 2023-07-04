@@ -26,7 +26,7 @@ export default function shiki() {
           .toString()
           .split("\n")
           .filter((line) => !line.includes("prettier-ignore"))
-          .map(line => line.replace("../lib", "twirl"))
+          .map((line) => line.replace("../lib", "twirl"))
           .join("\n");
         const highlighted = await highlighter.codeToHtml(
           lightContent.toString(),

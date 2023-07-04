@@ -1,4 +1,4 @@
-import logo from "/logo.png";
+import logo from "/logo.svg";
 
 import { dyngen } from "./lib";
 
@@ -78,7 +78,6 @@ export const page: HTMLElement = (
         <img
           style="max-width: 200px; margin: auto;"
           src={logo}
-          class="logo"
           alt="Twirl logo"
         />
       </a>
@@ -87,8 +86,6 @@ export const page: HTMLElement = (
           &lt;Twir<span style="font-style: oblique;">l</span>&gt;
         </span>
       </h1>
-      <p class="blink"></p>
-
       <p>
         <a href="https://github.com/nmattia/twirl">Twirl</a> is a JavaScript
         framework for building highly reactive apps and components.
