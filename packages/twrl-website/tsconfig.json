@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": ["src", "plugins"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "twrl",
+    "types": ["node", "./plugins/shiki.d.ts", "vite/client"]
+  }
+}

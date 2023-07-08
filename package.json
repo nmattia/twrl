@@ -1,22 +1,16 @@
 {
-  "name": "twirl",
+  "name": "root",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "watch": "tsc --noEmit --watch",
-    "preview": "vite preview",
-    "format": "bash -c 'prettier --ignore-path <(cat .gitignore .git/info/exclude) --write .'",
-    "test": "vitest"
+    "format": "bash -c 'prettier --ignore-path <(cat .gitignore .git/info/exclude) --write .'"
   },
+  "workspaces": [
+    "packages/twrl",
+    "packages/twrl-website"
+  ],
   "devDependencies": {
-    "jsdom": "^22.1.0",
     "prettier": "2.8.8",
-    "typescript": "^5.0.2",
-    "vite": "^4.3.9",
-    "vitest": "^0.32.0",
-    "shiki": "^0.14.3"
+    "typescript": "^5.0.2"
   }
 }

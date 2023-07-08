@@ -1,4 +1,4 @@
-import { Dyn, Trigger } from "../lib";
+import { Dyn, Trigger } from "twrl";
 
 export const GreetInputButton = () => {
   const name = new Dyn("World");

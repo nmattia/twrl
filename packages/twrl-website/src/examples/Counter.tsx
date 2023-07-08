@@ -1,4 +1,4 @@
-import { trigger } from "../lib";
+import { trigger } from "twrl";
 
 // prettier-ignore
 export const Counter = trigger((click) => (

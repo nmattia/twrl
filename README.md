@@ -1,12 +1,12 @@
-# Twirl
+# Twrl
 
-Twirl is an experimental UI framework.
+Twrl is an experimental UI framework.
 
-Twirl focuses on performance and correctness. It leverages TypeScript & tsx, no transpiling required.
+Twrl focuses on performance and correctness. It leverages TypeScript & tsx, no transpiling required.
 
 Work in progress :)
 
-[twirljs.dev](https://twirljs.dev)
+[twrl.dev](https://twrl.dev)
 
 ## Examples
 
@@ -24,11 +24,20 @@ document.body.append(
 );
 ```
 
-For more examples, see [./src/examples](./src/examples) and [twirljs.dev](https://twirljs.dev).
+For more examples, see [twrl.dev](https://twrl.dev).
 
 ## Hacking
 
 ```
 npm ci
+
+# and
+
+cd packages/twrl
+npm run watch
+
+# or
+
+cd packages/website
 npm run dev
 ```

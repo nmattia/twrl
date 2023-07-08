@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "@",
     "target": "ES2020",
+
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["esnext", "DOM", "DOM.Iterable"],
@@ -12,17 +11,10 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
 
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "types": ["./plugins/shiki.d.ts"]
-  },
-  "include": ["src", "plugins"]
+    "noFallthroughCasesInSwitch": true
+  }
 }

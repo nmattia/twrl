@@ -11,13 +11,14 @@ jobs:
           node-version: 16.14.0
 
       - run: npm ci
-      - run: npm run build
+      - run: npm run -w twrl build
+      - run: npm run -w twrl-website build
 
-      # XXX: this doesn't use any BASE_URL (like e.g. '/twirl') because
-      # the primary URL is twirljs.dev, not github.io/twirl
+      # XXX: this doesn't use any BASE_URL (like e.g. '/twrl') because
+      # the primary URL is the website, not github.io/twrl
       - uses: actions/upload-pages-artifact@v1.0.9
         with:
-          path: ./dist
+          path: ./packages/twrl-website/dist
 
   deploy:
     runs-on: ubuntu-latest

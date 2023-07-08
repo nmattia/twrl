@@ -11,12 +11,12 @@ type Children = Child | Child[];
 
 type HTMLGlobalAttributes = ["id", "itemprop", "lang", "class", "style"];
 
-type TwirlGlobalAttributes = {
+type TwrlGlobalAttributes = {
   innerHTML?: string | Dyn<string>;
   children?: Children; // TODO: not all tags should have children
 };
 
-type TwirlCustomAttributes = {
+type TwrlCustomAttributes = {
   input: {
     inputTrigger?: Trigger<string>;
     inputDyn?: Dyn<string>;
@@ -38,9 +38,9 @@ type Elements = {
     elementType: HTMLElementTagNameMap[Tag];
     attributes: {
       [Attr in HTMLGlobalAttributes[number]]?: string | Dyn<string>;
-    } & TwirlGlobalAttributes &
-      (Tag extends keyof TwirlCustomAttributes
-        ? TwirlCustomAttributes[Tag]
+    } & TwrlGlobalAttributes &
+      (Tag extends keyof TwrlCustomAttributes
+        ? TwrlCustomAttributes[Tag]
         : {});
   };
 };

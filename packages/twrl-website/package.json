@@ -1,0 +1,19 @@
+{
+  "name": "twrl-website",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "watch": "tsc --noEmit --watch",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "shiki": "^0.14.3",
+    "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "twrl": "*"
+  }
+}

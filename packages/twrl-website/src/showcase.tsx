@@ -1,6 +1,7 @@
-import logo from "/logo.svg";
+/** @jsxImportSource twrl */
+import { dyngen } from "twrl";
 
-import { dyngen } from "./lib";
+import logo from "/logo.svg";
 
 import { Counter } from "./examples/Counter";
 import counterSrc from "./examples/Counter.tsx?shiki";
@@ -78,16 +79,16 @@ export const page: HTMLElement = (
         <img
           style="max-width: 200px; margin: auto;"
           src={logo}
-          alt="Twirl logo"
+          alt="Twrl logo"
         />
       </a>
       <h1 class="title__container">
         <span class="title__text">
-          &lt;Twir<span style="font-style: oblique;">l</span>&gt;
+          &lt;Twr<span style="font-style: oblique;">l</span>&gt;
         </span>
       </h1>
       <p>
-        <a href="https://github.com/nmattia/twirl">Twirl</a> is a JavaScript
+        <a href="https://github.com/nmattia/twrl">Twrl</a> is a JavaScript
         framework for building highly reactive apps and components.
       </p>
       <p class="blink">

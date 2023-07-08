@@ -1,4 +1,4 @@
-import { trigger } from "../lib";
+import { trigger } from "twrl";
 
 export const GreetInput = trigger<string>((name) => (
   <div>

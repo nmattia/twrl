@@ -1,0 +1,45 @@
+{
+  "name": "twrl",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && npm run types && vite build",
+    "types": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types",
+    "watch": "tsc --noEmit --watch",
+    "test": "vitest"
+  },
+  "types": "dist/types/lib.d.ts",
+  "main": "dist/lib.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/lib.d.ts",
+      "default": "./dist/browser/lib.js"
+    },
+    "./lib.js": {
+      "types": "./dist/types/lib.d.ts",
+      "default": "./dist/browser/lib.js"
+    },
+    "./jsx-runtime.js": {
+      "types": "./dist/types/jsx-runtime.d.ts",
+      "default": "./dist/browser/jsx-runtime.js"
+    },
+    "./jsx-runtime": {
+      "types": "./dist/types/jsx-runtime.d.ts",
+      "default": "./dist/browser/jsx-runtime.js"
+    }
+  },
+  "files": [
+    "dist/browser/lib.js",
+    "dist/browser/jsx-runtime.js",
+    "dist/types/lib.d.ts",
+    "dist/types/jsx-runtime.d.ts"
+  ],
+  "devDependencies": {
+    "jsdom": "^22.1.0",
+    "vite": "^4.3.9",
+    "vitest": "^0.32.0"
+  },
+  "dependencies": {
+    "lit-html": "^2.7.5"
+  }
+}

@@ -1,4 +1,4 @@
-import { trigger } from "../lib";
+import { trigger } from "twrl";
 
 const names = ["Alice", "Bob", "Chuck"];
 

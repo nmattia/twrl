@@ -1,4 +1,4 @@
-import { Trigger } from "../lib";
+import { Trigger } from "twrl";
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
