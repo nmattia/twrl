@@ -11,6 +11,7 @@ export default defineConfig({
     lib: {
       entry: {
         "jsx-runtime": path.join(TOPLEVEL, "src/jsx-runtime.ts"),
+        "jsx-dev-runtime": path.join(TOPLEVEL, "src/jsx-dev-runtime.ts"),
         lib: path.join(TOPLEVEL, "src/lib.ts"),
       },
       name: "twrl",

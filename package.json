@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "format": "bash -c 'prettier --ignore-path <(cat .gitignore .git/info/exclude) --write .'"
+    "format": "bash -c 'prettier --ignore-path <(cat .gitignore .git/info/exclude) --write .'",
+    "dev": "npm run -w twrl-website dev"
   },
   "workspaces": [
     "packages/twrl",

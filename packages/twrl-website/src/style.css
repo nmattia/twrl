@@ -34,13 +34,13 @@ img {
   --ff-accent: "Roboto", sans-serif; /* headings */
   --ff-mono: monospace;
 
-  /* https://utopia.fyi/ */
-  --fs-0: clamp(1.13rem, calc(1.08rem + 0.22vw), 1.25rem);
-  --fs-1: clamp(1.35rem, calc(1.2rem + 0.73vw), 1.77rem);
-  --fs-2: clamp(1.62rem, calc(1.31rem + 1.53vw), 2.5rem);
-  --fs-3: clamp(1.94rem, calc(1.39rem + 2.77vw), 3.53rem);
-  --fs-4: clamp(2.33rem, calc(1.41rem + 4.63vw), 5rem);
-  --fs-5: clamp(2.8rem, calc(1.32rem + 7.42vw), 7.07rem);
+  /* TODO: https://utopia.fyi/ */
+  --fs-0: 1rem;
+  --fs-1: 1rem;
+  --fs-2: 1rem;
+  --fs-3: 1rem;
+  --fs-4: 1rem;
+  --fs-5: 1rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -92,12 +92,6 @@ a {
 a:hover,
 a:focus {
   color: var(--clr-accent);
-}
-
-.snippet {
-  border: 20px solid var(--clr-accent);
-  border-radius: 5px;
-  padding: 1em;
 }
 
 pre {

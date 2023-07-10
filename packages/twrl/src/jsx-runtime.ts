@@ -30,6 +30,7 @@ type TwrlCustomAttributes = {
   };
   a: {
     href: string;
+    target?: "_blank";
   };
 };
 
@@ -145,6 +146,9 @@ const handleProperty = {
       val.send(null);
     });
   },
+  target: (elem: HTMLElement, val: string) => {
+    elem.setAttribute("target", val);
+  },
 } as const;
 
 export function createIntrinsicComponent(
@@ -171,6 +175,11 @@ export function createIntrinsicComponent(
       );
     } else if (key === "inputDyn") {
       handleProperty["inputDyn"](
+        elem_ as ElemType<typeof key>,
+        attrs[key] as PropType<typeof key>
+      );
+    } else if (key === "target") {
+      handleProperty["target"](
         elem_ as ElemType<typeof key>,
         attrs[key] as PropType<typeof key>
       );

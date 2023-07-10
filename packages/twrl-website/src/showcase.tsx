@@ -73,39 +73,70 @@ export const Changing = () => {
 };
 
 export const page: HTMLElement = (
-  <main>
-    <article class="wrapper flow">
-      <a href={import.meta.env.BASE_URL}>
-        <img
-          style="max-width: 200px; margin: auto;"
-          src={logo}
-          alt="Twrl logo"
-        />
-      </a>
-      <h1 class="title__container">
-        <span class="title__text">
-          &lt;Twr<span style="font-style: oblique;">l</span>&gt;
-        </span>
-      </h1>
-      <p>
-        <a href="https://github.com/nmattia/twrl">Twrl</a> is a JavaScript
-        framework for building highly reactive apps and components.
-      </p>
-      <p class="blink">
-        <Changing />
-      </p>
+  <div>
+    <nav>
+      <ul style="padding: 1em; list-style: none; display: flex; gap: 2em; align-items: center;">
+        <li>
+          <a href={import.meta.env.BASE_URL}>
+            <img
+              style="min-width: 4em; max-height: 40px;"
+              src={logo}
+              alt="Twrl logo"
+            />
+          </a>
+        </li>
+        <li>
+          <a href="#examples">Examples</a>
+        </li>
+        <li>
+          <a href="#about">About</a>
+        </li>
+      </ul>
+    </nav>
+    <main>
+      <article class="wrapper flow">
+        <a href={import.meta.env.BASE_URL}>
+          <img
+            style="max-width: 200px; margin: auto; margin-top: 2em;"
+            src={logo}
+            alt="Twrl logo"
+          />
+        </a>
+        <div
+          style="font-size: 0.8em; text-align: center; max-width: 20em; margin: auto; margin-top: 2em; color: var(--clr-primary); "
+          class="blink"
+        >
+          <Changing />
+        </div>
+        <p style="margin: auto; margin-top: 2em; max-width: 20em; text-align: center;">
+          <a href="https://github.com/nmattia/twrl" target="_blank">
+            Twrl
+          </a>{" "}
+          is a JavaScript framework for building highly reactive apps and
+          components.
+        </p>
 
-      <h2>Examples</h2>
-      <div class="flow">
-        {showcasedComponents.map(({ component: C, src }) => (
-          <div class="snippet">
-            <div class="showcase">
-              <C />
+        <h2 id="examples">Examples</h2>
+        <div class="flow">
+          {showcasedComponents.map(({ component: C, src }) => (
+            <div class="snippet">
+              <div class="showcase">
+                <C />
+              </div>
+              <div style="text-align: left;" innerHTML={src}></div>
             </div>
-            <div style="text-align: left;" innerHTML={src}></div>
-          </div>
-        ))}
-      </div>
-    </article>
-  </main>
+          ))}
+        </div>
+        <h2 id="about">About</h2>
+        <p style="margin-bottom: 5em;">
+          <a href="https://github.com/nmattia/twrl" target="_blank">
+            Twrl
+          </a>
+          is an experimental JS framework by
+          <a href="https://nmattia.com">Nicolas Mattia</a>. Twrl is a work in
+          progress.
+        </p>
+      </article>
+    </main>
+  </div>
 );
