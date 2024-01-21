@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "shiki": "^0.14.3",
-    "vite": "^4.3.9"
+    "vite": "^4.5.2"
   },
   "dependencies": {
     "twrl": "*"
