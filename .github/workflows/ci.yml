@@ -12,7 +12,10 @@ jobs:
 
       - run: npm ci
       - run: npm run -w twrl build
-      - run: npm run -w twrl-website build
+
+      # Here we set an empty base, which makes vite produce links that are relative
+      # to the assets, as opposed to expecting all assets to be served from `/`.
+      - run: npm run -w twrl-website build -- --base ''
 
       # XXX: this doesn't use any BASE_URL (like e.g. '/twrl') because
       # the primary URL is the website, not github.io/twrl
