@@ -6,7 +6,7 @@ Twrl focuses on performance and correctness. It leverages TypeScript & tsx, no t
 
 Work in progress :)
 
-[twrl.dev](https://twrl.dev)
+To the [website]
 
 ## Examples
 
@@ -24,7 +24,7 @@ document.body.append(
 );
 ```
 
-For more examples, see [twrl.dev](https://twrl.dev).
+For more examples, see the [website].
 
 ## Hacking
 
@@ -41,3 +41,5 @@ npm run watch
 cd packages/website
 npm run dev
 ```
+
+[website]: https://nmattia.github.io/twrl
