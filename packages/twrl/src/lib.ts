@@ -2,7 +2,7 @@ export type Component = HTMLElement;
 
 export function dyngen<A>(
   update: (args: A) => Promise<A>,
-  initial: A
+  initial: A,
 ): Dyn<A> {
   const d = new Dyn(initial);
 
@@ -54,14 +54,14 @@ export class Dyn<A> {
   }
 
   map<B>(
-    opts: ((a: A) => B) | { f: (a: A) => B | typeof Dyn.unchanged; def: B }
+    opts: ((a: A) => B) | { f: (a: A) => B | typeof Dyn.unchanged; def: B },
   ): Dyn<B> {
     const { handleValue, latest } = this.__handleMapOpts(opts);
 
     const input = new Dyn<B>(latest);
 
     this.listeners.push((value: A) =>
-      handleValue({ send: (a: B) => input.send(a), value })
+      handleValue({ send: (a: B) => input.send(a), value }),
     );
 
     return input;
@@ -73,7 +73,7 @@ export class Dyn<A> {
 
   // How the mapped chan should handle the value
   protected __handleMapOpts<B>(
-    opts: ((a: A) => B) | { f: (a: A) => B | typeof Dyn.unchanged; def: B }
+    opts: ((a: A) => B) | { f: (a: A) => B | typeof Dyn.unchanged; def: B },
   ): {
     handleValue: (arg: { send: (b: B) => void; value: A }) => void;
     latest: B;
@@ -105,7 +105,7 @@ export class Dyn<A> {
 
 export function dyn<T>(
   f: (value: Dyn<T>) => Component,
-  initial: T
+  initial: T,
 ): () => Component {
   const value = new Dyn(initial);
   return () => {
@@ -115,14 +115,14 @@ export function dyn<T>(
 
 export function dyn_<T>(
   f: (value: Dyn<T>) => Component,
-  initial: T
+  initial: T,
 ): Component {
   const value = new Dyn(initial);
   return f(value);
 }
 
 export function trigger<T = null>(
-  f: (value: Trigger<T>) => Component
+  f: (value: Trigger<T>) => Component,
 ): () => Component {
   return () => {
     const t = new Trigger<T>(undefined);
@@ -154,7 +154,7 @@ export class Trigger<A> extends Dyn<A | undefined> {
         while (true) {
           yield await f();
         }
-      })()
+      })(),
     );
   }
 

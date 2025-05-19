@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "shiki": "^0.14.3",
-    "vite": "^4.5.2"
+    "shiki": "^3.4.2",
+    "vite": "^6.3.5"
   },
   "dependencies": {
     "twrl": "*"

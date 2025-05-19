@@ -73,11 +73,10 @@ declare global {
   (undefined as any)
 )) satisfies Trigger<string> | undefined;
 
-export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
-  T
->() => T extends Y ? 1 : 2
-  ? true
-  : false;
+export type Equals<X, Y> =
+  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
+    ? true
+    : false;
 
 // Look up property type based on property name
 type PropType<P extends string> = {
@@ -153,7 +152,7 @@ const handleProperty = {
 
 export function createIntrinsicComponent(
   tag: string,
-  attrs: Record<string, unknown>
+  attrs: Record<string, unknown>,
 ): HTMLElement {
   const elem_ = document.createElement(tag);
 
@@ -161,27 +160,27 @@ export function createIntrinsicComponent(
     if (key === "innerHTML") {
       handleProperty["innerHTML"](
         elem_ as ElemType<typeof key>,
-        attrs[key] as PropType<typeof key>
+        attrs[key] as PropType<typeof key>,
       );
     } else if (key === "inputTrigger") {
       handleProperty["inputTrigger"](
         elem_ as ElemType<typeof key>,
-        attrs[key] as PropType<typeof key>
+        attrs[key] as PropType<typeof key>,
       );
     } else if (key === "clickTrigger") {
       handleProperty["clickTrigger"](
         elem_ as ElemType<typeof key>,
-        attrs[key] as PropType<typeof key>
+        attrs[key] as PropType<typeof key>,
       );
     } else if (key === "inputDyn") {
       handleProperty["inputDyn"](
         elem_ as ElemType<typeof key>,
-        attrs[key] as PropType<typeof key>
+        attrs[key] as PropType<typeof key>,
       );
     } else if (key === "target") {
       handleProperty["target"](
         elem_ as ElemType<typeof key>,
-        attrs[key] as PropType<typeof key>
+        attrs[key] as PropType<typeof key>,
       );
     } else {
       // TODO: remove casts
@@ -220,7 +219,7 @@ export function createIntrinsicComponent(
 export function createComponent(
   f: string | Function,
   args: Record<string, string | (() => void) | Dyn<string>>,
-  children: Child[]
+  children: Child[],
 ): HTMLElement {
   let elem;
   if (typeof f === "string") {
@@ -320,7 +319,7 @@ export function jsx(...params: unknown[]): Node {
       newOpts[key] = () => val();
     } else {
       throw new Error(
-        "Expected string: string, got " + [typeof key, typeof val].join(": ")
+        "Expected string: string, got " + [typeof key, typeof val].join(": "),
       );
     }
   }
@@ -338,7 +337,7 @@ export function jsx(...params: unknown[]): Node {
       typeof child !== "string"
     ) {
       throw new Error(
-        "Expected child string or HTML, got " + typeof child + " " + child
+        "Expected child string or HTML, got " + typeof child + " " + child,
       );
     }
 

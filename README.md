@@ -20,7 +20,7 @@ const Counter = trigger((click) => (
 document.body.append(
   <div>
     Here is a counter: <Counter />
-  </div>
+  </div>,
 );
 ```
 

@@ -21,10 +21,10 @@ it("renders a div with children", () => {
       <div class="first">
         <span class="second">hello</span>
       </div>
-    </div>
+    </div>,
   );
   expect(document.body.innerHTML).toBe(
-    '<div><div class="first"><span class="second">hello</span></div></div>'
+    '<div><div class="first"><span class="second">hello</span></div></div>',
   );
 });
 
@@ -38,7 +38,7 @@ it.skip("renders a fragment", () => {
     <>
       <span>hello</span>
       <span>world</span>
-    </>
+    </>,
   );
   expect(document.body.innerHTML).toBe("hello");
 });
@@ -49,7 +49,7 @@ it("renders a list of components", () => {
       {["hello", "world"].map((str) => (
         <span>{str}</span>
       ))}
-    </div>
+    </div>,
   );
   expect(document.querySelectorAll("span").length).toBe(2);
 });
@@ -60,7 +60,7 @@ it("updates reactive text nodes", () => {
   document.body.appendChild(
     <div>
       <h1>Hello, {name}!</h1>
-    </div>
+    </div>,
   );
 
   expect(document.querySelector("h1")!.innerHTML).toBe("Hello, Alice!");
@@ -84,12 +84,12 @@ it("updates reactive attributes", () => {
   document.body.appendChild(<div class={clazz}></div>);
   expect(document.querySelector("div")!.classList.contains("nice")).toBe(true);
   expect(document.querySelector("div")!.classList.contains("ugly")).toBe(
-    false
+    false,
   );
   clazz.send("ugly");
   expect(document.querySelector("div")!.classList.contains("ugly")).toBe(true);
   expect(document.querySelector("div")!.classList.contains("nice")).toBe(
-    false
+    false,
   );
 });
 

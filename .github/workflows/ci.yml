@@ -5,10 +5,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16.14.0
+          node-version: 22.11.0
 
       - run: npm ci
       - run: npm run -w twrl build
@@ -16,7 +16,7 @@ jobs:
 
       # XXX: this doesn't use any BASE_URL (like e.g. '/twrl') because
       # the primary URL is the website, not github.io/twrl
-      - uses: actions/upload-pages-artifact@v1.0.9
+      - uses: actions/upload-pages-artifact@v3.0.1
         with:
           path: ./packages/twrl-website/dist
 
@@ -37,4 +37,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2.0.2
+        uses: actions/deploy-pages@v4.0.5
