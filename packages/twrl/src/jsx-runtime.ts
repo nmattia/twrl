@@ -285,8 +285,16 @@ export function jsx(...params: unknown[]): Node {
   const [f, props] = params;
 
   if (f === undefined) {
-    console.log(f, props);
-    throw new Error("undefined!");
+    if (
+      !props ||
+      !(typeof props === "object") ||
+      !("children" in props) ||
+      !props.children ||
+      !(typeof props.children === "string")
+    ) {
+      throw new Error("Could not infer text node: " + f + props);
+    }
+    return new Text(props.children);
   }
 
   if (typeof f !== "string" && typeof f !== "function") {

@@ -28,7 +28,7 @@ it("renders a div with children", () => {
   );
 });
 
-it.skip("renders a fragment -- simple", () => {
+it("renders a fragment -- simple", () => {
   document.body.appendChild(<>hello</>);
   expect(document.body.innerHTML).toBe("hello");
 });
