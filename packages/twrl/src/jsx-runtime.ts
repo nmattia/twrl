@@ -216,9 +216,34 @@ export function createIntrinsicComponent(
   return elem_;
 }
 
+function staticNode(value: string | number | HTMLElement): Node {
+  if (typeof value === "string") {
+    return document.createTextNode(value);
+  } else if (typeof value === "number") {
+    return document.createTextNode(String(value));
+  } else if (value instanceof HTMLElement) {
+    return value;
+  } else {
+    value satisfies never;
+    // For ts errors & pure js
+    throw new Error("Unsupported value for child: " + value);
+  }
+}
+
+function dynNode(child: Dyn<string> | Dyn<number> | Dyn<HTMLElement>): Node {
+  let node = staticNode(child.latest);
+  child.addListener((a: string | number | HTMLElement) => {
+    const oldNode = node;
+    node = staticNode(a);
+    oldNode.parentNode?.replaceChild(node, oldNode);
+  });
+
+  return node;
+}
+
 export function createComponent(
   f: string | Function,
-  args: Record<string, string | (() => void) | Dyn<string>>,
+  args: Record<string, string | (() => void) | Dyn<unknown>>,
   children: Child[],
 ): HTMLElement {
   let elem;
@@ -232,32 +257,13 @@ export function createComponent(
   }
 
   for (const child of children) {
-    if (typeof child === "string") {
-      const newNode = document.createTextNode(child);
-      elem.appendChild(newNode);
-    } else if (child instanceof Dyn) {
-      const getNodeValue = (value: unknown): Node => {
-        if (typeof value === "string") {
-          return document.createTextNode(value);
-        } else if (typeof value === "number") {
-          return document.createTextNode(value.toString());
-        } else if (value instanceof HTMLElement) {
-          return value;
-        } else {
-          throw new Error("Unsupported value for child: " + value);
-        }
-      };
-      let node = getNodeValue(child.latest);
-
-      elem.appendChild(node);
-      child.addListener((a: unknown) => {
-        const oldNode = node;
-        node = getNodeValue(a);
-        oldNode.parentNode?.replaceChild(node, oldNode);
-      });
+    let ret: Node;
+    if (child instanceof Dyn) {
+      ret = dynNode(child);
     } else {
-      elem.appendChild(child);
+      ret = staticNode(child);
     }
+    elem.appendChild(ret);
   }
 
   return elem;
@@ -310,26 +316,22 @@ export function jsx(...params: unknown[]): Node {
     throw new Error("Expected object, got null");
   }
 
+  // assumes that anything that is not 'children' is an HTML attribute
   const { children: children_, ...attrs_ } =
     "children" in props ? props : { children: undefined, ...props };
 
   const attrs: Record<string, unknown> = attrs_;
 
-  const newOpts: Record<string, string | (() => void) | Dyn<string>> = {};
+  const newOpts: Record<string, string | (() => void) | Dyn<unknown>> = {};
 
   for (const key of Object.keys(attrs)) {
     const val: unknown = attrs[key];
-    if (typeof key === "string" && typeof val === "string") {
-      newOpts[key] = val;
-    } else if (typeof key === "string" && val instanceof Dyn) {
-      newOpts[key] = val;
-    } else if (typeof key === "string" && typeof val === "function") {
-      newOpts[key] = () => val();
-    } else {
+    if (typeof val !== "string" && !(val instanceof Dyn)) {
       throw new Error(
         "Expected string: string, got " + [typeof key, typeof val].join(": "),
       );
     }
+    newOpts[key] = val;
   }
 
   const children: Child[] = [];
