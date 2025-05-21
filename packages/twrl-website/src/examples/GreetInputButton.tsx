@@ -2,7 +2,7 @@ import { Dyn, Trigger } from "twrl";
 
 export const GreetInputButton = () => {
   const name = new Dyn("World");
-  const click = new Trigger(null);
+  const click = new Trigger();
 
   return (
     <div>
