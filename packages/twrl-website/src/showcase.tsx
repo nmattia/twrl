@@ -32,7 +32,7 @@ const showcasedComponents: Example[] = [
 ];
 
 export const Changing = () => {
-  const words = ["Performance.", "Correctness.", "Magical."];
+  const words = ["Fast.", "Correct.", "Magical."];
 
   const fn = async ({
     current,
