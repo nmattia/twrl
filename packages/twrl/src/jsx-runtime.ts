@@ -230,9 +230,9 @@ function staticNode(value: string | number | HTMLElement): Node {
   }
 }
 
-function dynNode(child: Dyn<string> | Dyn<number> | Dyn<HTMLElement>): Node {
-  let node = staticNode(child.latest);
-  child.addListener((a: string | number | HTMLElement) => {
+function dynNode(dynVal: Dyn<string> | Dyn<number> | Dyn<HTMLElement>): Node {
+  let node: Node = staticNode(dynVal.latest);
+  dynVal.addListener((a: string | number | HTMLElement) => {
     const oldNode = node;
     node = staticNode(a);
     oldNode.parentNode?.replaceChild(node, oldNode);
@@ -243,13 +243,16 @@ function dynNode(child: Dyn<string> | Dyn<number> | Dyn<HTMLElement>): Node {
 
 export function createComponent(
   f: string | Function,
-  args: Record<string, string | (() => void) | Dyn<unknown>>,
+  args: Record<
+    string,
+    string | (() => void) | Dyn<unknown> | Trigger<unknown>
+  >,
   children: Child[],
 ): HTMLElement {
   let elem;
   if (typeof f === "string") {
     elem = createIntrinsicComponent(f, args);
-  } else if (f instanceof Dyn) {
+  } else if (f instanceof Dyn || f instanceof Trigger) {
     throw new Error("not implemented");
     // TODO: handle
   } else {
@@ -322,11 +325,18 @@ export function jsx(...params: unknown[]): Node {
 
   const attrs: Record<string, unknown> = attrs_;
 
-  const newOpts: Record<string, string | (() => void) | Dyn<unknown>> = {};
+  const newOpts: Record<
+    string,
+    string | (() => void) | Dyn<unknown> | Trigger<unknown>
+  > = {};
 
   for (const key of Object.keys(attrs)) {
     const val: unknown = attrs[key];
-    if (typeof val !== "string" && !(val instanceof Dyn)) {
+    if (
+      typeof val !== "string" &&
+      !(val instanceof Dyn) &&
+      !(val instanceof Trigger)
+    ) {
       throw new Error(
         "Expected string: string, got " + [typeof key, typeof val].join(": "),
       );

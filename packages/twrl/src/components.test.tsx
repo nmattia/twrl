@@ -120,7 +120,7 @@ it("updates reactive tree", () => {
 it("triggers click handlers", () => {
   const fn = vi.fn();
 
-  const click = new Trigger(null);
+  const click = new Trigger();
   click.addListener(() => fn());
 
   document.body.appendChild(<button clickTrigger={click}></button>);
