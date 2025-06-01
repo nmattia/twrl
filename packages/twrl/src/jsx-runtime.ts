@@ -9,14 +9,17 @@ type Child =
   | Dyn<HTMLElement>;
 type Children = Child | Child[];
 
-type HTMLGlobalAttributes = ["id", "itemprop", "lang", "class", "style"];
-
 type TwrlGlobalAttributes = {
   innerHTML?: string | Dyn<string>;
   children?: Children; // TODO: not all tags should have children
+  id?: string | Dyn<string>;
+  itemprop?: string | Dyn<string>;
+  lang?: string | Dyn<string>;
+  class?: string | Dyn<string>;
+  style?: string | Dyn<string>;
 };
 
-type TwrlCustomAttributes = {
+type TwrlOverrides = {
   input: {
     inputTrigger?: Trigger<string>;
     inputDyn?: Dyn<string>;
@@ -37,23 +40,18 @@ type TwrlCustomAttributes = {
 type Elements = {
   [Tag in keyof HTMLElementTagNameMap]: {
     elementType: HTMLElementTagNameMap[Tag];
-    attributes: {
-      [Attr in HTMLGlobalAttributes[number]]?: string | Dyn<string>;
-    } & TwrlGlobalAttributes &
-      (Tag extends keyof TwrlCustomAttributes
-        ? TwrlCustomAttributes[Tag]
-        : {});
+    attributes: TwrlGlobalAttributes &
+      (Tag extends keyof TwrlOverrides ? TwrlOverrides[Tag] : {});
   };
 };
 
 declare global {
   namespace JSX {
     type Element = HTMLElement;
-    type ElementChildrenAttribute = { children: {} };
     type ElementType = keyof HTMLElementTagNameMap | (() => HTMLElement);
 
     type IntrinsicElements = {
-      [Tag in keyof Elements]: Elements[Tag]["attributes"];
+      [Tag in keyof HTMLElementTagNameMap]: Elements[Tag]["attributes"];
     };
   }
 }
