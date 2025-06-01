@@ -286,33 +286,16 @@ export function createComponent(
 //              ^ in our case, an HTML element
 //          - the value itself for raw values (<div>{ foo() }</div>)
 //
-export function jsx(...params: unknown[]): Node {
-  const [f, props] = params;
-
+export function jsx(
+  f: string | undefined | (() => JSX.Element),
+  props: { children?: Children },
+): Node {
+  /* if f is undefined then this is a text node */
   if (f === undefined) {
-    if (
-      !props ||
-      !(typeof props === "object") ||
-      !("children" in props) ||
-      !props.children ||
-      !(typeof props.children === "string")
-    ) {
+    if (!props.children || !(typeof props.children === "string")) {
       throw new Error("Could not infer text node: " + f + props);
     }
     return new Text(props.children);
-  }
-
-  if (typeof f !== "string" && typeof f !== "function") {
-    console.log(props);
-    throw new Error("Expected string or function, got: " + typeof f);
-  }
-
-  if (typeof props !== "object") {
-    throw new Error("Expected object, got: " + typeof props);
-  }
-
-  if (props === null) {
-    throw new Error("Expected object, got null");
   }
 
   // assumes that anything that is not 'children' is an HTML attribute
@@ -340,35 +323,21 @@ export function jsx(...params: unknown[]): Node {
     newOpts[key] = val;
   }
 
-  const children: Child[] = [];
+  const children = homogenizeChildren(children_);
+  return createComponent(f, newOpts, children);
+}
 
-  const addChild = (child: unknown) => {
-    if (Array.isArray(child)) {
-      child.forEach(addChild);
-      return;
-    }
-    if (
-      !(child instanceof Dyn) &&
-      !(child instanceof HTMLElement) &&
-      typeof child !== "string"
-    ) {
-      throw new Error(
-        "Expected child string or HTML, got " + typeof child + " " + child,
-      );
-    }
-
-    children.push(child);
-  };
-
-  if (Array.isArray(children_)) {
-    for (const child of children_) {
-      addChild(child);
-    }
-  } else if (children_ !== undefined) {
-    addChild(children_);
+// Create a consistent array of children
+function homogenizeChildren(children_: undefined | Child | Child[]): Child[] {
+  if (children_ === undefined) {
+    return [];
   }
 
-  return createComponent(f, newOpts, children);
+  if (!Array.isArray(children_)) {
+    return [children_];
+  }
+
+  return children_;
 }
 
 export const jsxs = jsx;
