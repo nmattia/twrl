@@ -12,11 +12,6 @@ type Children = Child | Child[];
 type TwrlGlobalAttributes = {
   innerHTML?: string | Dyn<string>;
   children?: Children; // TODO: not all tags should have children
-  id?: string | Dyn<string>;
-  itemprop?: string | Dyn<string>;
-  lang?: string | Dyn<string>;
-  class?: string | Dyn<string>;
-  style?: string | Dyn<string>;
 };
 
 type TwrlOverrides = {
@@ -27,21 +22,14 @@ type TwrlOverrides = {
   button: {
     clickTrigger?: Trigger<null>;
   };
-  img: {
-    src: string;
-    alt: string;
-  };
-  a: {
-    href: string;
-    target?: "_blank";
-  };
 };
 
 type Elements = {
   [Tag in keyof HTMLElementTagNameMap]: {
     elementType: HTMLElementTagNameMap[Tag];
-    attributes: TwrlGlobalAttributes &
-      (Tag extends keyof TwrlOverrides ? TwrlOverrides[Tag] : {});
+    attributes: TwrlGlobalAttributes & {
+      [T in HTMLElementStringAttributes<Tag>]?: string | Dyn<string>;
+    } & (Tag extends keyof TwrlOverrides ? TwrlOverrides[Tag] : {});
   };
 };
 
@@ -113,20 +101,7 @@ type ElemType<P extends string> = {
 (<ElemType<"innerHTML">>(undefined as any)) satisfies HTMLElement;
 (<HTMLElement>(undefined as any)) satisfies ElemType<"innerHTML">;
 
-// 'href' should only be available on anchor elements (<a></a>)
-(<ElemType<"href">>(undefined as any)) satisfies HTMLAnchorElement;
-(<HTMLAnchorElement>(undefined as any)) satisfies ElemType<"href">;
-
 const handleProperty = {
-  innerHTML: (elem: HTMLElement, val: string | Dyn<string>) => {
-    if (val instanceof Dyn) {
-      val.addListener((a) => {
-        elem.innerHTML = a;
-      });
-    } else {
-      elem.innerHTML = val;
-    }
-  },
   inputTrigger: (elem: HTMLInputElement, val: Trigger<string>) => {
     elem.addEventListener("input", () => {
       val.send(elem.value);
@@ -142,9 +117,6 @@ const handleProperty = {
       val.send(null);
     });
   },
-  target: (elem: HTMLElement, val: string) => {
-    elem.setAttribute("target", val);
-  },
 } as const;
 
 export function createIntrinsicComponent(
@@ -154,12 +126,7 @@ export function createIntrinsicComponent(
   const elem_ = document.createElement(tag);
 
   for (const key in attrs) {
-    if (key === "innerHTML") {
-      handleProperty["innerHTML"](
-        elem_ as ElemType<typeof key>,
-        attrs[key] as PropType<typeof key>,
-      );
-    } else if (key === "inputTrigger") {
+    if (key === "inputTrigger") {
       handleProperty["inputTrigger"](
         elem_ as ElemType<typeof key>,
         attrs[key] as PropType<typeof key>,
@@ -174,26 +141,19 @@ export function createIntrinsicComponent(
         elem_ as ElemType<typeof key>,
         attrs[key] as PropType<typeof key>,
       );
-    } else if (key === "target") {
-      handleProperty["target"](
-        elem_ as ElemType<typeof key>,
-        attrs[key] as PropType<typeof key>,
-      );
     } else {
       // TODO: remove casts
       const elem = elem_ as ElemType<typeof key>;
       const val = attrs[key] as PropType<typeof key>;
 
       if (typeof val === "string") {
-        if (key === "innerHTML") {
-          elem.innerHTML = val;
-        } else {
-          elem.setAttribute(key, val);
-        }
+        // @ts-ignore
+        elem[key] = val; /* TODO: carry proof */
       } else if (val instanceof Dyn) {
         const setAttr = (a: unknown) => {
           if (typeof a === "string") {
-            elem.setAttribute(key, a);
+            // @ts-ignore
+            elem[key] = a; /* TODO: carry proof */
           } // TODO: else: handle
         };
         val.addListener(setAttr);
@@ -283,10 +243,17 @@ export function createComponent(
 //          - the result of jsx call for components/tags (<div><Greet/><img/></div>)
 //              ^ in our case, an HTML element
 //          - the value itself for raw values (<div>{ foo() }</div>)
-//
-export function jsx(
-  f: string | undefined | (() => JSX.Element),
-  props: { children?: Children },
+type HTMLElementStringAttributes<Tag extends keyof HTMLElementTagNameMap> = {
+  [Attr in keyof HTMLElementTagNameMap[Tag]]: HTMLElementTagNameMap[Tag][Attr] extends string
+    ? Attr
+    : never;
+}[keyof HTMLElementTagNameMap[Tag]];
+
+export function jsx<Tag extends keyof HTMLElementTagNameMap = "div">(
+  f: Tag | undefined | (() => JSX.Element),
+  props: Record<HTMLElementStringAttributes<Tag>, string> & {
+    children?: Children;
+  },
 ): Node {
   /* if f is undefined then this is a text node */
   if (f === undefined) {
