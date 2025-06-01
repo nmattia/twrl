@@ -122,7 +122,6 @@ type ElemType<P extends string> = {
 const handleProperty = {
   innerHTML: (elem: HTMLElement, val: string | Dyn<string>) => {
     if (val instanceof Dyn) {
-      elem.innerHTML = val.latest;
       val.addListener((a) => {
         elem.innerHTML = a;
       });
@@ -199,10 +198,7 @@ export function createIntrinsicComponent(
             elem.setAttribute(key, a);
           } // TODO: else: handle
         };
-        setAttr(val.latest);
-        val.addListener((a) => {
-          setAttr(a);
-        });
+        val.addListener(setAttr);
       } else if (typeof val === "function") {
         // TODO: use triggers everywhere for events
         const eventName = key.slice(2); // drop "on"
