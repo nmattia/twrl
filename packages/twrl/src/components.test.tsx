@@ -68,6 +68,11 @@ it("updates reactive text nodes", () => {
   expect(document.querySelector("h1")!.innerHTML).toBe("Hello, Bob!");
 });
 
+it("renders styles", () => {
+  const elem = <div style="max-height: 80em;"></div>;
+  expect(elem.style.maxHeight).toBe("80em");
+});
+
 it.skip("updates reactive text nodes - top level", () => {
   const name = new Dyn("Alice");
 

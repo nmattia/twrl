@@ -29,7 +29,9 @@ type Elements = {
     elementType: HTMLElementTagNameMap[Tag];
     attributes: TwrlGlobalAttributes & {
       [T in HTMLElementStringAttributes<Tag>]?: string | Dyn<string>;
-    } & (Tag extends keyof TwrlOverrides ? TwrlOverrides[Tag] : {});
+    } & (Tag extends keyof TwrlOverrides ? TwrlOverrides[Tag] : {}) & {
+        style?: string /* note: This should probably be CSSStyleDeclaration */;
+      };
   };
 };
 

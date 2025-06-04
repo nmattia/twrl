@@ -94,7 +94,7 @@ export const page: HTMLElement = (
       </ul>
     </nav>
     <main>
-      <article class="wrapper flow">
+      <article className="wrapper flow">
         <a href={import.meta.env.BASE_URL}>
           <img
             style="max-width: 200px; margin: auto; margin-top: 2em;"
@@ -104,7 +104,7 @@ export const page: HTMLElement = (
         </a>
         <div
           style="font-size: 0.8em; text-align: center; max-width: 20em; margin: auto; margin-top: 2em; color: var(--clr-primary); "
-          class="blink"
+          className="blink"
         >
           <Changing />
         </div>
@@ -117,10 +117,10 @@ export const page: HTMLElement = (
         </p>
 
         <h2 id="examples">Examples</h2>
-        <div class="flow">
+        <div className="flow">
           {showcasedComponents.map(({ component: C, src }) => (
-            <div class="snippet">
-              <div class="showcase">
+            <div className="snippet">
+              <div className="showcase">
                 <C />
               </div>
               <div style="text-align: left;" innerHTML={src}></div>
