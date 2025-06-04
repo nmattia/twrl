@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "scripts": {
     "format": "bash -c 'prettier --ignore-path <(cat .gitignore .git/info/exclude) --write .'",
-    "dev": "npm run -w twrl-website dev"
+    "dev": "npm run -w twrl-website dev",
+    "build": "npm run -w twrl build && npm run -w twrl-website build",
+    "test": "npm run -w twrl test"
   },
   "workspaces": [
     "packages/twrl",
