@@ -46,107 +46,39 @@ declare global {
   }
 }
 
-(<Elements["div"]["elementType"]>(undefined as any)) satisfies HTMLElement;
-(<Elements["div"]["elementType"]>(undefined as any)) satisfies HTMLDivElement;
-
-// @ts-expect-error
-// prettier-ignore
-(<Elements["div"]["elementType"]>( (undefined as any))) satisfies HTMLInputElement;
-
-(<Elements["div"]["attributes"]["innerHTML"]>(undefined as any)) satisfies
-  | undefined
-  | string
-  | Dyn<string>;
-(<Elements["input"]["attributes"]["inputTrigger"]>(
-  (undefined as any)
-)) satisfies Trigger<string> | undefined;
-
-export type Equals<X, Y> =
-  (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2
-    ? true
-    : false;
-
-// Look up property type based on property name
-type PropType<P extends string> = {
-  [Tag in keyof Elements]: Elements[Tag]["attributes"] extends {
-    [_ in P]?: infer T;
-  }
-    ? T
-    : never;
-}[keyof Elements];
-(<PropType<"innerHTML">>(undefined as any)) satisfies string | Dyn<string>;
-
-// @ts-expect-error
-(<PropType<"innerHTML">>(undefined as any)) satisfies never;
-
-(<string>(undefined as any)) satisfies PropType<"innerHTML">;
-
-(<PropType<"innerHTML">>(undefined as any)) satisfies unknown;
-
-(<Equals<PropType<"innerHTML">, string | Dyn<string>>>(
-  (undefined as any)
-)) satisfies true;
-
-// @ts-expect-error
-(<PropType<"innerHTML">>(undefined as any)) satisfies number;
-
-// Look up element type based on property name
-type ElemType<P extends string> = {
-  [Tag in keyof Elements]: Elements[Tag]["attributes"] extends {
-    [_ in P]?: any;
-  }
-    ? Elements[Tag]["elementType"]
-    : never;
-}[keyof Elements];
-
-// 'innerHTML' should be available on all element types
-(<ElemType<"innerHTML">>(undefined as any)) satisfies HTMLElement;
-(<HTMLElement>(undefined as any)) satisfies ElemType<"innerHTML">;
-
-const handleProperty = {
-  inputTrigger: (elem: HTMLInputElement, val: Trigger<string>) => {
-    elem.addEventListener("input", () => {
-      val.send(elem.value);
-    });
-  },
-  inputDyn: (elem: HTMLInputElement, val: Dyn<string>) => {
-    elem.addEventListener("input", () => {
-      val.send(elem.value);
-    });
-  },
-  clickTrigger: (elem: HTMLButtonElement, val: Trigger<null>) => {
-    elem.addEventListener("click", () => {
-      val.send(null);
-    });
-  },
-} as const;
-
 export function createIntrinsicComponent(
   tag: string,
   attrs: Record<string, unknown>,
 ): HTMLElement {
-  const elem_ = document.createElement(tag);
+  const elem = document.createElement(tag);
 
   for (const key in attrs) {
-    if (key === "inputTrigger") {
-      handleProperty["inputTrigger"](
-        elem_ as ElemType<typeof key>,
-        attrs[key] as PropType<typeof key>,
-      );
-    } else if (key === "clickTrigger") {
-      handleProperty["clickTrigger"](
-        elem_ as ElemType<typeof key>,
-        attrs[key] as PropType<typeof key>,
-      );
-    } else if (key === "inputDyn") {
-      handleProperty["inputDyn"](
-        elem_ as ElemType<typeof key>,
-        attrs[key] as PropType<typeof key>,
-      );
+    const val = attrs[key];
+    if (key === "inputTrigger" && elem instanceof HTMLInputElement) {
+      const val = attrs[key];
+      if (val instanceof Trigger) {
+        elem.addEventListener("input", () => {
+          // TODO: ensure val has correct type
+          // https://github.com/microsoft/TypeScript/issues/17473
+          val.send(elem.value);
+        });
+      }
+    } else if (key === "clickTrigger" && elem instanceof HTMLButtonElement) {
+      if (val instanceof Trigger) {
+        elem.addEventListener("click", () => {
+          val.send(elem.value);
+        });
+      }
+    } else if (key === "inputDyn" && elem instanceof HTMLInputElement) {
+      const val = attrs[key];
+      if (val instanceof Dyn) {
+        elem.addEventListener("input", () => {
+          val.send(elem.value);
+        });
+      }
     } else {
       // TODO: remove casts
-      const elem = elem_ as ElemType<typeof key>;
-      const val = attrs[key] as PropType<typeof key>;
+      const val = attrs[key];
 
       if (typeof val === "string") {
         // @ts-ignore
@@ -162,14 +94,14 @@ export function createIntrinsicComponent(
       } else if (typeof val === "function") {
         // TODO: use triggers everywhere for events
         const eventName = key.slice(2); // drop "on"
-        elem.addEventListener(eventName, val);
+        elem.addEventListener(eventName, val as any);
       } else {
         throw new Error("Unknown attribute: " + key + ", " + val);
       }
     }
   }
 
-  return elem_;
+  return elem;
 }
 
 function staticNode(value: string | number | HTMLElement): Node {
@@ -199,10 +131,7 @@ function dynNode(dynVal: Dyn<string> | Dyn<number> | Dyn<HTMLElement>): Node {
 
 export function createComponent(
   f: string | Function,
-  args: Record<
-    string,
-    string | (() => void) | Dyn<unknown> | Trigger<unknown>
-  >,
+  args: Record<string, string | Dyn<string>>,
   children: Child[],
 ): HTMLElement {
   let elem;
@@ -228,6 +157,13 @@ export function createComponent(
   return elem;
 }
 
+/* All HTML attributes with string values: "id" | "name" | ... */
+type HTMLElementStringAttributes<Tag extends keyof HTMLElementTagNameMap> = {
+  [Attr in keyof HTMLElementTagNameMap[Tag]]: HTMLElementTagNameMap[Tag][Attr] extends string
+    ? Attr
+    : never;
+}[keyof HTMLElementTagNameMap[Tag]];
+
 // function called by jsx.
 //  arg0:
 //     - string for intrinsic elements ("div", "span", etc)
@@ -245,11 +181,6 @@ export function createComponent(
 //          - the result of jsx call for components/tags (<div><Greet/><img/></div>)
 //              ^ in our case, an HTML element
 //          - the value itself for raw values (<div>{ foo() }</div>)
-type HTMLElementStringAttributes<Tag extends keyof HTMLElementTagNameMap> = {
-  [Attr in keyof HTMLElementTagNameMap[Tag]]: HTMLElementTagNameMap[Tag][Attr] extends string
-    ? Attr
-    : never;
-}[keyof HTMLElementTagNameMap[Tag]];
 
 export function jsx<Tag extends keyof HTMLElementTagNameMap = "div">(
   f: Tag | undefined | (() => JSX.Element),
@@ -265,33 +196,10 @@ export function jsx<Tag extends keyof HTMLElementTagNameMap = "div">(
     return new Text(props.children);
   }
 
-  // assumes that anything that is not 'children' is an HTML attribute
-  const { children: children_, ...attrs_ } =
-    "children" in props ? props : { children: undefined, ...props };
-
-  const attrs: Record<string, unknown> = attrs_;
-
-  const newOpts: Record<
-    string,
-    string | (() => void) | Dyn<unknown> | Trigger<unknown>
-  > = {};
-
-  for (const key of Object.keys(attrs)) {
-    const val: unknown = attrs[key];
-    if (
-      typeof val !== "string" &&
-      !(val instanceof Dyn) &&
-      !(val instanceof Trigger)
-    ) {
-      throw new Error(
-        "Expected string: string, got " + [typeof key, typeof val].join(": "),
-      );
-    }
-    newOpts[key] = val;
-  }
+  const { children: children_, ...attrs } = props;
 
   const children = homogenizeChildren(children_);
-  return createComponent(f, newOpts, children);
+  return createComponent(f, attrs, children);
 }
 
 // Create a consistent array of children

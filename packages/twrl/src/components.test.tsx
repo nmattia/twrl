@@ -133,3 +133,21 @@ it("triggers click handlers", () => {
   document.querySelector("button")!.click();
   expect(fn).toHaveBeenCalledTimes(1);
 });
+
+it("triggers input handlers", () => {
+  const fn = vi.fn();
+
+  const ipt = new Trigger<string>();
+  ipt.addListener(() => fn());
+
+  const elem = <input inputTrigger={ipt}></input>;
+  document.body.appendChild(elem);
+  expect(fn).toHaveBeenCalledTimes(0);
+  elem.dispatchEvent(
+    new Event("input", {
+      bubbles: true,
+      cancelable: true,
+    }),
+  );
+  expect(fn).toHaveBeenCalledTimes(1);
+});
