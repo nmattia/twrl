@@ -193,8 +193,22 @@ export function jsx<Tag extends keyof HTMLElementTagNameMap = "div">(
 ): Node {
   /* if f is undefined then this is a text node */
   if (f === undefined) {
-    if (!props.children || !(typeof props.children === "string")) {
-      throw new Error("Could not infer text node: " + f + props);
+    if (!props.children) {
+      throw new Error("Fragment does not have children");
+    }
+    /* a fragment with multiple children means returning a list of HTML elements,
+     * which would need to be checked for on every invocation -- at least until
+     * tsc allows more fine-grained return types */
+    if (Array.isArray(props.children)) {
+      throw new Error(
+        "Fragment does not support children: " +
+          JSON.stringify(props.children),
+      );
+    }
+    if (typeof props.children !== "string") {
+      throw new Error(
+        "Fragment only supports strings, got: " + JSON.stringify(props),
+      );
     }
     return new Text(props.children);
   }

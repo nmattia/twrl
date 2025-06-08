@@ -33,14 +33,13 @@ it("renders a fragment -- simple", () => {
   expect(document.body.innerHTML).toBe("hello");
 });
 
-it.skip("renders a fragment", () => {
-  document.body.appendChild(
+it("throws for fragments with multiple children", () => {
+  expect(() => (
     <>
       <span>hello</span>
       <span>world</span>
-    </>,
-  );
-  expect(document.body.innerHTML).toBe("hello");
+    </>
+  )).toThrowError();
 });
 
 it("renders a custom component", () => {
