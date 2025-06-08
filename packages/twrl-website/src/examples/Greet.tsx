@@ -8,6 +8,6 @@ const getName = (ix: number) => names[ix];
 export const Greet = trigger((click) => (
   <div>
     <p>Hello, {click.track((acc, _) => inc(acc), 0).map(getName)}!</p>
-    <button clickTrigger={click}>next</button>
+    <button on:click={click}>next</button>
   </div>
 ));
