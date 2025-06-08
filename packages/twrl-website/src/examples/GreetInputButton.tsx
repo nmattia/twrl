@@ -7,8 +7,8 @@ export const GreetInputButton = () => {
   return (
     <div>
       <p>Hello, {name.block(click)}!</p>
-      <input inputDyn={name} />
-      <button clickTrigger={click}>Update</button>
+      <input on:input={name} />
+      <button on:click={click}>Update</button>
     </div>
   );
 };

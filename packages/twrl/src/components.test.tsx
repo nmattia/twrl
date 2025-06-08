@@ -134,7 +134,7 @@ it("triggers click handlers", () => {
   const click = new Trigger();
   click.addListener(() => fn());
 
-  document.body.appendChild(<button clickTrigger={click}></button>);
+  document.body.appendChild(<button on:click={click}></button>);
   expect(fn).toHaveBeenCalledTimes(0);
   document.querySelector("button")!.click();
   expect(fn).toHaveBeenCalledTimes(1);
@@ -146,7 +146,7 @@ it("triggers input handlers", () => {
   const ipt = new Trigger<string>();
   ipt.addListener(() => fn());
 
-  const elem = <input inputTrigger={ipt}></input>;
+  const elem = <input on:input={ipt}></input>;
   document.body.appendChild(elem);
   expect(fn).toHaveBeenCalledTimes(0);
   elem.dispatchEvent(

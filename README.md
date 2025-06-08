@@ -14,7 +14,7 @@ Here is an example, written in tsx:
 
 ```tsx
 const Counter = trigger((click) => (
-  <button clickTrigger={click}>Count is {click.track((x) => x + 1, 0)}</button>
+  <button on:click={click}>Count is {click.track((x) => x + 1, 0)}</button>
 ));
 
 document.body.append(
