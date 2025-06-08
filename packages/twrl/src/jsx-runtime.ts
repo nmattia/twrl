@@ -9,11 +9,6 @@ type Child =
   | Dyn<HTMLElement>;
 type Children = Child | Child[];
 
-type TwrlGlobalAttributes = {
-  innerHTML?: string | Dyn<string>;
-  children?: Children; // TODO: not all tags should have children
-};
-
 type TwrlOverrides = {
   input: {
     inputTrigger?: Trigger<string>;
@@ -24,25 +19,20 @@ type TwrlOverrides = {
   };
 };
 
-type Elements = {
-  [Tag in keyof HTMLElementTagNameMap]: {
-    attributes: TwrlGlobalAttributes & {
-      [T in HTMLElementStringAttributes<Tag>]?: string | Dyn<string>;
-    } & {
-      [T in HTMLElementNumberAttributes<Tag>]?: number | Dyn<number>;
-    } & (Tag extends keyof TwrlOverrides ? TwrlOverrides[Tag] : {}) & {
-        style?: string /* note: This should probably be CSSStyleDeclaration */;
-      };
-  };
-};
-
 declare global {
   namespace JSX {
-    type Element = HTMLElement;
+    type Element = HTMLElement; /* return type for 'jsx()' */
     type ElementType = keyof HTMLElementTagNameMap | (() => HTMLElement);
 
+    /* accepted element tags & attributes */
     type IntrinsicElements = {
-      [Tag in keyof HTMLElementTagNameMap]: Elements[Tag]["attributes"];
+      [Tag in keyof HTMLElementTagNameMap]: {
+        [T in HTMLElementStringAttributes<Tag>]?: string | Dyn<string>;
+      } & {
+        [T in HTMLElementNumberAttributes<Tag>]?: number | Dyn<number>;
+      } & (Tag extends keyof TwrlOverrides ? TwrlOverrides[Tag] : {}) & {
+          style?: string /* note: This should probably be CSSStyleDeclaration */;
+        };
     };
   }
 }

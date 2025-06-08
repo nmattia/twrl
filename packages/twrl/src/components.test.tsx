@@ -43,6 +43,13 @@ it.skip("renders a fragment", () => {
   expect(document.body.innerHTML).toBe("hello");
 });
 
+it("renders a custom component", () => {
+  const C = () => <div>hello</div>;
+  document.body.appendChild(<C />);
+
+  expect(document.body.innerHTML).toBe("<div>hello</div>");
+});
+
 it("renders a list of components", () => {
   document.body.appendChild(
     <div>
