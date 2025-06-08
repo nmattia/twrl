@@ -1,6 +1,6 @@
 {
   "name": "twrl",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit && npm run types && vite build",
