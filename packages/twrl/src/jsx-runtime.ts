@@ -26,9 +26,10 @@ type TwrlOverrides = {
 
 type Elements = {
   [Tag in keyof HTMLElementTagNameMap]: {
-    elementType: HTMLElementTagNameMap[Tag];
     attributes: TwrlGlobalAttributes & {
       [T in HTMLElementStringAttributes<Tag>]?: string | Dyn<string>;
+    } & {
+      [T in HTMLElementNumberAttributes<Tag>]?: number | Dyn<number>;
     } & (Tag extends keyof TwrlOverrides ? TwrlOverrides[Tag] : {}) & {
         style?: string /* note: This should probably be CSSStyleDeclaration */;
       };
@@ -80,15 +81,19 @@ export function createIntrinsicComponent(
       // TODO: remove casts
       const val = attrs[key];
 
-      if (typeof val === "string") {
+      if (["string", "number"].includes(typeof val)) {
         // @ts-ignore
         elem[key] = val; /* TODO: carry proof */
       } else if (val instanceof Dyn) {
         const setAttr = (a: unknown) => {
-          if (typeof a === "string") {
+          if (["string", "number"].includes(typeof a)) {
             // @ts-ignore
             elem[key] = a; /* TODO: carry proof */
-          } // TODO: else: handle
+          } else {
+            throw new Error(
+              "Don't know how to handle value of type " + typeof val,
+            );
+          }
         };
         val.addListener(setAttr);
       } else if (typeof val === "function") {
@@ -164,6 +169,13 @@ type HTMLElementStringAttributes<Tag extends keyof HTMLElementTagNameMap> = {
     : never;
 }[keyof HTMLElementTagNameMap[Tag]];
 
+/* All HTML attributes with number values: "tabIndex" | ... */
+type HTMLElementNumberAttributes<Tag extends keyof HTMLElementTagNameMap> = {
+  [Attr in keyof HTMLElementTagNameMap[Tag]]: HTMLElementTagNameMap[Tag][Attr] extends number
+    ? Attr
+    : never;
+}[keyof HTMLElementTagNameMap[Tag]];
+
 // function called by jsx.
 //  arg0:
 //     - string for intrinsic elements ("div", "span", etc)
@@ -184,9 +196,10 @@ type HTMLElementStringAttributes<Tag extends keyof HTMLElementTagNameMap> = {
 
 export function jsx<Tag extends keyof HTMLElementTagNameMap = "div">(
   f: Tag | undefined | (() => JSX.Element),
-  props: Record<HTMLElementStringAttributes<Tag>, string> & {
-    children?: Children;
-  },
+  props: Record<HTMLElementStringAttributes<Tag>, string> &
+    Record<HTMLElementNumberAttributes<Tag>, number> & {
+      children?: Children;
+    },
 ): Node {
   /* if f is undefined then this is a text node */
   if (f === undefined) {

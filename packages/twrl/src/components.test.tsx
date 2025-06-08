@@ -151,3 +151,10 @@ it("triggers input handlers", () => {
   );
   expect(fn).toHaveBeenCalledTimes(1);
 });
+
+it("allows number inputs", () => {
+  <input tabIndex={1} />;
+
+  // @ts-expect-error
+  <input tabIndex="1" />;
+});
