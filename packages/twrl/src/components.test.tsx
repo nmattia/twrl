@@ -137,6 +137,33 @@ it("updates reactive tree", () => {
   expect(document.querySelector("#tab2")).not.toBe(null);
 });
 
+it("maps triggers", () => {
+  let v: number = 0;
+
+  const t1 = new Trigger<null>();
+  t1.map((_) => 42).addListener((x) => {
+    v = x;
+  });
+
+  expect(v).toBe(0);
+  t1.send(null);
+  expect(v).toBe(42);
+});
+
+it("collapses triggers", () => {
+  const fn = vi.fn();
+
+  const t1 = new Trigger<null>();
+  const t2 = new Trigger<null>();
+
+  Trigger.any(t1, t2).addListener(() => fn());
+
+  expect(fn).toHaveBeenCalledTimes(0);
+
+  t1.send(null);
+  expect(fn).toHaveBeenCalledTimes(1);
+});
+
 it("triggers click handlers", () => {
   const fn = vi.fn();
 

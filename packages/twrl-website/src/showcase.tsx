@@ -6,6 +6,9 @@ import logo from "/logo.svg";
 import { Counter } from "./examples/Counter";
 import counterSrc from "./examples/Counter.tsx?shiki";
 
+import { CounterMinMax } from "./examples/CounterMinMax";
+import counterMinMaxSrc from "./examples/CounterMinMax.tsx?shiki";
+
 import { Greet } from "./examples/Greet";
 import greetSrc from "./examples/Greet.tsx?shiki";
 
@@ -25,6 +28,7 @@ type Example = {
 
 const showcasedComponents: Example[] = [
   { component: Counter, src: counterSrc },
+  { component: CounterMinMax, src: counterMinMaxSrc },
   { component: Greet, src: greetSrc },
   { component: GreetInput, src: greetInputSrc },
   { component: GreetInputButton, src: greetInputButtonSrc },
