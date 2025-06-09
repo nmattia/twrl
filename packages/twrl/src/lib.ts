@@ -163,12 +163,29 @@ export class Trigger<A = null> {
     return t;
   }
 
+  static any<A1, A2>(t1: Trigger<A1>, t2: Trigger<A2>): Trigger<A1 | A2> {
+    const t3 = new Trigger<A1 | A2>();
+
+    t1.addListener((x) => t3.send(x));
+    t2.addListener((x) => t3.send(x));
+
+    return t3;
+  }
+
   addListener(f: (a: A) => void) {
     this.listeners.push(f);
   }
 
   send(a: A) {
     this.listeners.forEach((listener) => listener(a));
+  }
+
+  map<B>(f: (a: A) => B): Trigger<B> {
+    const t = new Trigger<B>();
+    this.addListener((x) => {
+      t.send(f(x));
+    });
+    return t;
   }
 
   track<B>(f: (b: B, a: A) => B, initial: B): Dyn<B> {
