@@ -33,6 +33,15 @@ it("renders a fragment -- simple", () => {
   expect(document.body.innerHTML).toBe("hello");
 });
 
+/* not safe, but sets inner HTML */
+it("renders an element with innerHTML", () => {
+  const raw = `<span>hello</span>`;
+  const div = <div innerHTML={raw}></div>;
+
+  const span = div.querySelector("span");
+  expect(span).not.toBe(null);
+});
+
 it("throws for fragments with multiple children", () => {
   expect(() => (
     <>
