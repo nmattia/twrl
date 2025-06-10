@@ -137,6 +137,19 @@ it("updates reactive tree", () => {
   expect(document.querySelector("#tab2")).not.toBe(null);
 });
 
+it("sets triggers", () => {
+  let v: number = 0;
+
+  const t1 = new Trigger();
+  t1.set(42).addListener((x) => {
+    v = x;
+  });
+
+  expect(v).toBe(0);
+  t1.send(null);
+  expect(v).toBe(42);
+});
+
 it("maps triggers", () => {
   let v: number = 0;
 

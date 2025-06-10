@@ -180,6 +180,14 @@ export class Trigger<A = null> {
     this.listeners.forEach((listener) => listener(a));
   }
 
+  set<B>(v: B): Trigger<B> {
+    const t = new Trigger<B>();
+    this.addListener(() => {
+      t.send(v);
+    });
+    return t;
+  }
+
   map<B>(f: (a: A) => B): Trigger<B> {
     const t = new Trigger<B>();
     this.addListener((x) => {
