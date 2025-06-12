@@ -7,18 +7,17 @@ const START = MIN;
 
 // Helpers
 const clamp = (x: number) => Math.min(Math.max(x, MIN), MAX);
-const inc = (x: number) => x + 1;
-const dec = (x: number) => x - 1;
 
 // Component
 // prettier-ignore
 export const CounterMinMax = () => {
-  const plus = new Trigger(), plusf = plus.set(inc);
-  const minus = new Trigger(), minusf = minus.set(dec);
-  const value = Trigger.any(plusf, minusf).track(
-    (acc, f) => clamp(f(acc)),
+  const plus = new Trigger(), minus = new Trigger();
+
+  const value = Trigger.any(plus.set(1), minus.set(-1)).track(
+    (acc, delta) => clamp(acc + delta),
     START,
   );
+
   return (
     <div>
       <button on:click={minus}>-</button>
