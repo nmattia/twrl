@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 22.11.0
+          node-version: 24.x
 
       - run: npm ci
       - run: npm run -w twrl test && npm run -w twrl build
