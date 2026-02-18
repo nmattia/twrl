@@ -88,6 +88,16 @@ it("renders styles", () => {
   expect(elem.style.maxHeight).toBe("80em");
 });
 
+it("renders aria labels", () => {
+  const elem = <div aria-label="hello"></div>;
+  expect(elem.ariaLabel).toBe("hello");
+});
+
+it("renders datasets", () => {
+  const elem = <div data-foo="hello"></div>;
+  expect(elem.dataset.foo).toBe("hello");
+});
+
 it.skip("updates reactive text nodes - top level", () => {
   const name = new Dyn("Alice");
 
