@@ -2,13 +2,25 @@
 
 Bump the version in the libary's package.json.
 
-Package the library:
+Clean install:
 
 ```
-npm -w ./packages/twrl prepare # or npm -w ./packages/twrl pack to see the .tgz
+npm ci && rm -rf ./packages/twrl/dist
 ```
 
-or alternatively, publish it:
+Build the library:
+
+```
+npm -w ./packages/twrl run build
+```
+
+Preview the tarball:
+
+```
+npm -w ./packages/twrl pack
+```
+
+Publish the package:
 
 ```
 npm -w ./packages/twrl publish
