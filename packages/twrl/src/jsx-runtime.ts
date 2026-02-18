@@ -71,9 +71,22 @@ export function createIntrinsicComponent(
       continue;
     }
 
-    if (["string", "number"].includes(typeof val)) {
-      // @ts-ignore
-      elem[key] = val; /* TODO: carry proof */
+    if (typeof val === "string" || typeof val === "number") {
+      // In most cases, setAttribute is the correct way to set the attribute. However for some attributes
+      // like 'class', jsx gives use 'classname', which have to be set as a property on the element itself,
+      // though unforutnately this breaks for special attributes like `data-foo` or `aria-label`.
+      //
+      // As a tradeoff (and to avoid having to list all known properties) we use setAttribute if the key
+      // contains a dash, and set the property otherwise. Works in most cases...
+      if (key.includes("-")) {
+        elem.setAttribute(
+          key,
+          String(val) /* potentially convert number to string */,
+        );
+      } else {
+        // @ts-ignore
+        elem[key] = val; /* TODO: carry proof */
+      }
       continue;
     }
 
