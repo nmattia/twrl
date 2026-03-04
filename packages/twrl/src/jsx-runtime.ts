@@ -31,6 +31,7 @@ declare global {
         [T in HTMLElementNumberAttributes<Tag>]?: number | Dyn<number>;
       } & (Tag extends keyof TwrlOverrides ? TwrlOverrides[Tag] : {}) & {
           style?: string /* note: This should probably be CSSStyleDeclaration */;
+          children?: Children /* defines the type of children */;
         };
     };
   }
