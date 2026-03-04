@@ -26,20 +26,4 @@ document.body.append(
 
 For more examples, see the [website].
 
-## Hacking
-
-```
-npm ci
-
-# and
-
-cd packages/twrl
-npm run watch
-
-# or
-
-cd packages/website
-npm run dev
-```
-
 [website]: https://nmattia.github.io/twrl
