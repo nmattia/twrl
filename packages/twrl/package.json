@@ -46,7 +46,7 @@
   ],
   "devDependencies": {
     "jsdom": "~28",
-    "vite": "~7",
+    "vite": "~8",
     "vitest": "^4.1.8"
   }
 }
