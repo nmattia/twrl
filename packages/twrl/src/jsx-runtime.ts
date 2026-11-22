@@ -38,6 +38,28 @@ export function createIntrinsicComponent(
 ): HTMLElement {
   const elem = document.createElement(tag);
 
+  // Helper for setting dynamic attributes
+  const handleDynAttr = (
+    key: string,
+    val: Dyn<unknown>,
+    setAttr: (
+      a: string,
+    ) => void /* how to set the "attribute", which may be something else than an HTML attribute, like a class */,
+  ) => {
+    const onUpdate = (a: unknown) => {
+      if (!["string", "number"].includes(typeof a)) {
+        throw new Error(
+          "On key " +
+            `'${key}'` +
+            ", don't know how to handle value of type " +
+            typeof val,
+        );
+      }
+      setAttr(String(a));
+    };
+    val.addListener(onUpdate);
+  };
+
   for (const key in attrs) {
     const val = attrs[key];
 
@@ -67,10 +89,33 @@ export function createIntrinsicComponent(
       continue;
     }
 
+    if (key === "className") {
+      // this is jsx reporting a `<elem class="foo">`
+
+      if (val instanceof Dyn) {
+        // The class is a Dyn, so register updates
+
+        // Note: `className` is handled differently from generic attributes, since
+        // the class cannot be set with `.setAttribute`.
+        handleDynAttr(key, val, (a) => {
+          elem.className = a;
+        });
+        continue;
+      } else if (typeof val === "string") {
+          elem.className = val;
+          continue;
+      } else {
+        // The class is neither a Dyn nor a string, so *shrug*
+        throw new Error(
+          "Internal error: JSX reported class of type: " + typeof val,
+        );
+      }
+    }
+
     if (typeof val === "string" || typeof val === "number") {
       // In most cases, setAttribute is the correct way to set the attribute. However for some attributes
-      // like 'class', jsx gives use 'classname', which have to be set as a property on the element itself,
-      // though unforutnately this breaks for special attributes like `data-foo` or `aria-label`.
+      // like 'class', jsx gives use 'classname', which has to be set as a property on the element itself,
+      // though unfortunately this breaks for special attributes like `data-foo` or `aria-label`.
       //
       // As a tradeoff (and to avoid having to list all known properties) we use setAttribute if the key
       // contains a dash, and set the property otherwise. Works in most cases...
@@ -87,21 +132,14 @@ export function createIntrinsicComponent(
     }
 
     if (val instanceof Dyn) {
-      const setAttr = (a: unknown) => {
-        if (!["string", "number"].includes(typeof a)) {
-          throw new Error(
-            "Don't know how to handle value of type " + typeof val,
-          );
-        }
-        try {
-          // @ts-ignore
-          elem[key] = a; /* TODO: carry proof */
-        } catch {
-          console.error("Could not set value " + key, elem);
-        }
-      };
-      val.addListener(setAttr);
+      handleDynAttr(key, val, (a) => {
+        elem.setAttribute(key, a);
+      });
       continue;
+    }
+
+    if (val === undefined || val === null) {
+      continue; // skip the attr
     }
 
     throw new Error("Unknown attribute: " + key + ", " + val);
