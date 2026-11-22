@@ -45,7 +45,7 @@
     "dist/types/jsx-dev-runtime.d.ts"
   ],
   "devDependencies": {
-    "jsdom": "~28",
+    "jsdom": "~31",
     "vite": "~8",
     "vitest": "^4.1.8"
   }
