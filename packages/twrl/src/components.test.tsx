@@ -285,3 +285,10 @@ it("reactive aria-* attributes are set and updated", () => {
   const elem = <div aria-label={d}></div>;
   expect(elem.getAttribute("aria-label")).toBe("one");
 });
+
+it("attribute Dyn with a bad value reports the value's actual type", () => {
+  const d = new Dyn<unknown>("ok");
+  const elem = <div some-attr={d}>hello</div>;
+  expect(elem.getAttribute("some-attr")).toBe("ok");
+  expect(() => d.send(true)).toThrowError(/boolean/);
+});

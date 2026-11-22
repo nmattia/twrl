@@ -52,7 +52,7 @@ export function createIntrinsicComponent(
           "On key " +
             `'${key}'` +
             ", don't know how to handle value of type " +
-            typeof val,
+            typeof a,
         );
       }
       setAttr(String(a));
@@ -102,8 +102,8 @@ export function createIntrinsicComponent(
         });
         continue;
       } else if (typeof val === "string") {
-          elem.className = val;
-          continue;
+        elem.className = val;
+        continue;
       } else {
         // The class is neither a Dyn nor a string, so *shrug*
         throw new Error(
