@@ -135,8 +135,8 @@ export const page: HTMLElement = (
         <p style="margin-bottom: 5em;">
           <a href="https://github.com/nmattia/twrl" target="_blank">
             Twrl
-          </a>
-          is an experimental JS framework by
+          </a>{" "}
+          is an experimental JS framework by{" "}
           <a href="https://nmattia.com">Nicolas Mattia</a>. Twrl is a work in
           progress.
         </p>
