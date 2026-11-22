@@ -233,3 +233,13 @@ it("Dyn.map calls f only once on creation", () => {
   expect(f).toHaveBeenCalledTimes(1);
   expect(mapped.latest).toBe(2);
 });
+
+it("Dyn.sequence updates when any input updates", () => {
+  const a = new Dyn(1);
+  const b = new Dyn("x");
+  const both = Dyn.sequence([a, b]);
+  expect(both.latest).toEqual([1, "x"]);
+
+  a.send(2);
+  expect(both.latest).toEqual([2, "x"]);
+});
