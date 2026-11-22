@@ -292,3 +292,8 @@ it("attribute Dyn with a bad value reports the value's actual type", () => {
   expect(elem.getAttribute("some-attr")).toBe("ok");
   expect(() => d.send(true)).toThrowError(/boolean/);
 });
+
+it("fragment renders falsy string", () => {
+  const node = <>{""}</>;
+  expect(node.textContent).toBe("");
+});

@@ -242,7 +242,7 @@ export function jsx<Tag extends keyof JSX.IntrinsicElements = "div">(
 ): Node {
   /* if f is undefined then this is a text node */
   if (f === undefined) {
-    if (!props.children) {
+    if (props.children === undefined || props.children === null) {
       throw new Error("Fragment does not have children");
     }
     /* a fragment with multiple children means returning a list of HTML elements,
