@@ -243,3 +243,15 @@ it("Dyn.sequence updates when any input updates", () => {
   a.send(2);
   expect(both.latest).toEqual([2, "x"]);
 });
+
+it("Dyn.send listeners see the new value in .latest", () => {
+  const d = new Dyn(0);
+  const seen: number[] = [];
+  d.addListener(() => {
+    seen.push(d.latest);
+  });
+  seen.length = 0; // drop the immediate call from addListener
+
+  d.send(1);
+  expect(seen).toEqual([1]);
+});

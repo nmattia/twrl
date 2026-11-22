@@ -78,10 +78,11 @@ export class Dyn<A> {
   }
 
   send(a: A) {
-    this.listeners.forEach((listener) => listener(a));
-
-    // and set as latest
+    // set as latest
     this.latest = a;
+
+    // then notify listeners
+    this.listeners.forEach((listener) => listener(a));
   }
 
   update(f: (a: A) => A) {
