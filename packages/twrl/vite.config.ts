@@ -2,7 +2,8 @@ import { defineConfig } from "vite";
 import path from "path";
 import { resolve } from "path";
 
-const TOPLEVEL = resolve(__dirname);
+const DIRNAME = import.meta.dirname;
+const TOPLEVEL = resolve(DIRNAME);
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -19,7 +20,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./src"),
+      "@": resolve(DIRNAME, "./src"),
     },
   },
 });
