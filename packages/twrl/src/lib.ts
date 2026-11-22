@@ -61,6 +61,7 @@ export class Dyn<A> {
     this.send(initial); // latest will be set twice but we don't care
   }
 
+  /// NOTE: addListener will call `f` immediately as well as once for every future Dyn update
   addListener<R = undefined>(f: (a: A) => R) {
     this.listeners.push(f);
     return f(this.latest);
@@ -87,10 +88,27 @@ export class Dyn<A> {
     this.send(f(this.latest));
   }
 
+  /// NOTE: `f` should not have side effects. It may be called an arbitrary number of times.
+  // (in practice, `f` will be called once with the latest value, and then once for every future update)
   map<B>(f: (a: A) => B): Dyn<B> {
-    const d = new Dyn<B>(f(this.latest));
-    this.addListener((x) => {
-      d.send(f(x));
+    // for all calls _except_ the initial one, we want the event to be propagated and that's all.
+    // On the first call however, we want to create Dyn. Instead of having an if-condition used
+    // on every update, we replace the function after the first call.
+    const ref = {
+      onUpdate: (x: A) => {
+        const latest = f(x);
+        const d = new Dyn<B>(latest);
+        ref.onUpdate = (y) => {
+          d.send(f(y));
+          return d; /* actual value does not matter */
+        };
+        d.send(latest);
+        return d;
+      },
+    };
+
+    const d = this.addListener<Dyn<B>>((x) => {
+      return ref.onUpdate(x);
     });
     return d;
   }

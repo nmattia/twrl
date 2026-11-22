@@ -223,3 +223,13 @@ it("allows number inputs", () => {
   // @ts-expect-error
   <input tabIndex="1" />;
 });
+
+// In theory `map` can call `f` any number of times; in practice we expect it to
+// call `f` only once on creation
+it("Dyn.map calls f only once on creation", () => {
+  const f = vi.fn((x: number) => x * 2);
+  const d = new Dyn(1);
+  const mapped = d.map(f);
+  expect(f).toHaveBeenCalledTimes(1);
+  expect(mapped.latest).toBe(2);
+});
