@@ -4,12 +4,12 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit && npm run types && vite build",
-    "types": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types",
+    "types": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist/types && rm ./dist/types/*.test.d.ts",
     "watch": "tsc --noEmit --watch",
     "test": "vitest"
   },
   "types": "dist/types/lib.d.ts",
-  "main": "dist/lib.js",
+  "main": "dist/browser/lib.js",
   "exports": {
     ".": {
       "types": "./dist/types/lib.d.ts",

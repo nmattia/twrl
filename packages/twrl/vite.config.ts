@@ -16,8 +16,10 @@ export default defineConfig({
         lib: path.join(TOPLEVEL, "src/lib.ts"),
       },
       name: "twrl",
+      formats: ["es"] /* only generate .js, not eg .cjs */,
     },
   },
+  /* necessary for jsxImportSource in tsconfig */
   resolve: {
     alias: {
       "@": resolve(DIRNAME, "./src"),
