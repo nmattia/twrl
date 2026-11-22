@@ -1,12 +1,7 @@
 import { Trigger, Dyn } from "./lib";
 
 type Child =
-  | string
-  | number
-  | HTMLElement
-  | Dyn<string>
-  | Dyn<number>
-  | Dyn<HTMLElement>;
+  string | number | HTMLElement | Dyn<string> | Dyn<number> | Dyn<HTMLElement>;
 type Children = Child | Child[];
 
 type TwrlOverrides = {
@@ -170,16 +165,16 @@ export function createComponent(
 
 /* All HTML attributes with string values: "id" | "name" | ... */
 type HTMLElementStringAttributes<Tag extends keyof HTMLElementTagNameMap> = {
-  [Attr in keyof HTMLElementTagNameMap[Tag]]: HTMLElementTagNameMap[Tag][Attr] extends string
-    ? Attr
-    : never;
+  [
+    Attr in keyof HTMLElementTagNameMap[Tag]
+  ]: HTMLElementTagNameMap[Tag][Attr] extends string ? Attr : never;
 }[keyof HTMLElementTagNameMap[Tag]];
 
 /* All HTML attributes with number values: "tabIndex" | ... */
 type HTMLElementNumberAttributes<Tag extends keyof HTMLElementTagNameMap> = {
-  [Attr in keyof HTMLElementTagNameMap[Tag]]: HTMLElementTagNameMap[Tag][Attr] extends number
-    ? Attr
-    : never;
+  [
+    Attr in keyof HTMLElementTagNameMap[Tag]
+  ]: HTMLElementTagNameMap[Tag][Attr] extends number ? Attr : never;
 }[keyof HTMLElementTagNameMap[Tag]];
 
 // function called by jsx.
