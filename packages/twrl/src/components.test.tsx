@@ -255,3 +255,33 @@ it("Dyn.send listeners see the new value in .latest", () => {
   d.send(1);
   expect(seen).toEqual([1]);
 });
+
+it("undefined and null attributes are skipped", () => {
+  const href: string | undefined = undefined;
+  const a = (<a href={href}></a>) as HTMLAnchorElement;
+  expect(a.hasAttribute("href")).toBe(false);
+});
+
+it("reactive class attributes are set and updated", () => {
+  const d = new Dyn("pretty");
+  const elem = <div className={d}></div>;
+  expect(elem.className).toBe("pretty");
+
+  d.send("ugly");
+  expect(elem.className).toBe("ugly");
+});
+
+it("reactive dashed attributes (data-*) are set and updated", () => {
+  const d = new Dyn("one");
+  const elem = <div data-foo={d}></div>;
+  expect(elem.getAttribute("data-foo")).toBe("one");
+
+  d.send("two");
+  expect(elem.getAttribute("data-foo")).toBe("two");
+});
+
+it("reactive aria-* attributes are set and updated", () => {
+  const d = new Dyn("one");
+  const elem = <div aria-label={d}></div>;
+  expect(elem.getAttribute("aria-label")).toBe("one");
+});
