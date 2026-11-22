@@ -96,33 +96,6 @@ export class Dyn<A> {
   }
 }
 
-export function dyn<T>(
-  f: (value: Dyn<T>) => Component,
-  initial: T,
-): () => Component {
-  const value = new Dyn(initial);
-  return () => {
-    return f(value);
-  };
-}
-
-export function dyn_<T>(
-  f: (value: Dyn<T>) => Component,
-  initial: T,
-): Component {
-  const value = new Dyn(initial);
-  return f(value);
-}
-
-export function trigger<T = null>(
-  f: (value: Trigger<T>) => Component,
-): () => Component {
-  return () => {
-    const t = new Trigger<T>();
-    return f(t);
-  };
-}
-
 export class Trigger<A = null> {
   private listeners: ((a: A) => void)[] = [];
 
