@@ -1,8 +1,10 @@
-import { trigger } from "twrl";
+import { Trigger } from "twrl";
 
-export const GreetInput = trigger<string>((name) => (
+const name = new Trigger<string>();
+
+export const GreetInput = () => (
   <div>
     <p>Hello, {name.track((_, x) => x, "World")}!</p>
     <input on:input={name} />
   </div>
-));
+);
