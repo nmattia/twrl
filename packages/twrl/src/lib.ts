@@ -1,15 +1,5 @@
 export type Component = HTMLElement;
 
-export type Pop<As> = As extends []
-  ? []
-  : As extends [Dyn<infer A0>, ...infer More]
-    ? [A0, ...Pop<More>]
-    : never;
-
-type Mutable<T> = {
-  -readonly [P in keyof T]: T[P];
-};
-
 export function dyngen<A>(
   update: (args: A) => Promise<A>,
   initial: A,
@@ -33,20 +23,16 @@ export class Dyn<A> {
 
   static readonly unchanged = Symbol("unchanged");
 
-  static sequence<Ds, As extends Pop<Mutable<Ds>>>(vs: Ds): Dyn<As> {
-    // @ts-ignore
-    const seqed = new Dyn(vs.map((x) => x.latest)) as Dyn<As>;
-    // @ts-ignore
-    vs.forEach((v, ix) => {
-      // @ts-ignore
-      v.addListener((v) => {
-        // @ts-ignore
-        const vals = vs.map((x) => x.latest);
-        // @ts-ignore
-        vals[ix] = v;
-        // @ts-ignore
-        seqed.send(vals);
-      });
+  static sequence<As extends readonly unknown[]>(vs: {
+    readonly [K in keyof As]: Dyn<As[K]>;
+  }): Dyn<As> {
+    // typescript loses track of element types when mapping heterogeneous arrays:
+    // https://github.com/microsoft/TypeScript/issues/29841
+    const latests = () => vs.map((d) => d.latest) as unknown as As;
+
+    const seqed = new Dyn<As>(latests());
+    vs.forEach((d) => {
+      d.addListener(() => seqed.send(latests()));
     });
 
     return seqed;
