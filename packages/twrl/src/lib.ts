@@ -145,16 +145,6 @@ export class Trigger<A = null> {
     );
   }
 
-  static watch<B>(d: Dyn<B>): Trigger<B> {
-    const t = new Trigger<B>();
-
-    t.addListener((v) => {
-      d.send(v);
-    });
-
-    return t;
-  }
-
   static any<A1, A2>(t1: Trigger<A1>, t2: Trigger<A2>): Trigger<A1 | A2> {
     const t3 = new Trigger<A1 | A2>();
 
