@@ -26,7 +26,11 @@ export default function shiki() {
 
         const highlighted = await codeToHtml(lightContent.toString(), {
           lang: ext,
-          theme: "github-light",
+          themes: {
+            light: "github-light-default",
+            dark: "github-dark-default",
+          },
+          defaultColor: "light-dark()",
         });
 
         return `export default ${JSON.stringify(highlighted)}`;
