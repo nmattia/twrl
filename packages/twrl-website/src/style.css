@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap");
-
 /** Reset */
 
 *,
@@ -12,139 +10,427 @@
   margin: 0;
 }
 
-html {
-  color-scheme: light dark;
-}
-
 img {
   max-width: 100%;
+  height: auto;
   display: block;
 }
 
 /** Design tokens */
 
 :root {
-  --clr-text: hsl(206, 62%, 5%);
-  --clr-background: hsl(200, 60%, 99%);
-  --clr-primary: hsl(235, 73%, 73%);
-  --clr-accent: hsl(125, 83%, 74%);
-  --clr-secondary: hsl(204, 61%, 92%);
+  color-scheme: light dark;
 
-  --ff-base: "Nunito", sans-serif; /* body, etc */
-  --ff-accent: "Roboto", sans-serif; /* headings */
-  --ff-mono: monospace;
+  /* colors of the logo */
+  --c-logo-purple: #99f;
+  --c-logo-green: #86f48f;
 
-  /* TODO: https://utopia.fyi/ */
-  --fs-0: 1rem;
-  --fs-1: 1rem;
-  --fs-2: 1rem;
-  --fs-3: 1rem;
-  --fs-4: 1rem;
-  --fs-5: 1rem;
+  --c-brand: #6e6ef0; /* logo purple, darkened for contrast on white */
+  --c-on-brand: #fff;
+  --c-bg: #fff;
+  --c-bg-soft: #f6f6f7;
+  --c-text: #1f1f24;
+  --c-text-2: #5c5c66;
+  --c-divider: #e2e2e5;
+
+  /* colors of the diagonal lines behind the examples, derived from logo colors and tweaked by hand to avoid overpowering the content */
+  --c-line: color-mix(in srgb, var(--c-divider) 35%, transparent);
+  --c-line-purple: color-mix(in srgb, var(--c-logo-purple) 15%, transparent);
+  --c-line-green: color-mix(in srgb, var(--c-logo-green) 25%, transparent);
+
+  --nav-height: 64px;
+
+  /* set of commonly available system fonts */
+  --ff-sans: system-ui, sans-serif;
+  --ff-mono: ui-monospace, Menlo, Consolas, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --clr-text: hsl(200, 60%, 99%);
-    --clr-background: hsl(206, 62%, 5%);
-    --clr-accent: hsl(235, 73%, 73%);
-    --clr-primary: hsl(125, 83%, 74%);
-    --clr-secondary: hsl(204, 61%, 17%);
+    --c-brand: var(--c-logo-purple);
+    --c-on-brand: #1b1b1f;
+    --c-bg: #1b1b1f;
+    --c-bg-soft: #202127;
+    --c-text: #e6e6ea;
+    --c-text-2: #a0a0ab;
+    --c-divider: #2e2e34;
+
+    --c-line-purple: color-mix(in srgb, var(--c-logo-purple) 10%, transparent);
+    --c-line-green: color-mix(in srgb, var(--c-logo-green) 8%, transparent);
   }
 }
 
-/** General styling */
+/** Base */
+
+html {
+  /* don't hide anchors under the sticky nav */
+  scroll-padding-top: calc(var(--nav-height) + 1rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
 
 body {
-  font-size: var(--fs-1);
-  font-family: var(--ff-base);
+  font-family: var(--ff-sans);
   line-height: 1.6;
-  color: var(--clr-text);
-  background: var(--clr-background);
+  color: var(--c-text);
+  background: var(--c-bg);
 }
 
 h1,
-h2,
-h3 {
-  font-family: var(--ff-accent);
-  line-height: 1.1;
-  text-wrap: balance;
-}
-
-h1 {
-  font-size: var(--fs-4);
-  color: var(--clr-primary);
+h2 {
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 h2 {
-  --flow-space: 1.5em;
-  font-size: var(--fs-3);
-}
-
-h3 {
-  font-size: var(--fs-2);
+  font-size: 1.75rem;
 }
 
 a {
-  color: var(--clr-primary);
+  color: var(--c-brand);
+  text-underline-offset: 0.15em;
 }
 
-a:hover,
-a:focus {
-  color: var(--clr-accent);
-}
-
-pre {
-  border: 4px solid var(--clr-primary);
-  overflow-x: scroll;
-  padding: 0.6em;
-}
-pre code {
-  font-size: var(--fs-0);
-}
-
-.wrapper {
-  width: min(100% - 3rem, 50ch);
+/* Centers the content and caps its width, with some room on the sides */
+.container {
+  width: min(100% - 3rem, 1120px);
   margin-inline: auto;
 }
 
-/* Add margins inter blocks (top margin on all except first */
-.flow > * + * {
-  margin-top: var(--flow-space, 1em);
+/** Nav */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--c-divider);
+  background: color-mix(in srgb, var(--c-bg) 80%, transparent);
+  backdrop-filter: blur(12px);
 }
 
-/** Custom elements */
-
-.title__container {
-  text-align: center;
-  display: block;
+.nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: var(--nav-height);
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
-.title__text {
-  font-size: var(--fs-5);
-  font-weight: 700;
-  margin: auto;
-  background: linear-gradient(120deg, var(--clr-primary), var(--clr-accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* The first link is the logo (an image, so the color doesn't apply to it) */
+.nav a {
+  color: var(--c-text);
+  text-decoration: none;
 }
 
-/* Blinking cursor animation */
-.blink span::after {
+.nav img {
+  height: 28px;
+}
+
+/* push the other links to the right */
+.nav a:first-child {
+  margin-right: auto;
+}
+
+/** Hero */
+
+.hero {
+  display: grid;
+  align-items: center;
+  gap: 2rem;
+  padding-block: 4rem 3rem;
+}
+
+/*
+ * The heading never wraps, otherwise the section jumps while typing. With the
+ * longest word ("Magical.") it is about 12.5em wide, so it scales with its
+ * container to fit (100cqi / 12.5 = 8cqi, minus a bit of slack). When even
+ * the minimum size doesn't fit (2rem * 12.5 = 25rem), the typed word gets its
+ * own line.
+ */
+.hero__text {
+  container-type: inline-size;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 7.5cqi, 3rem);
+  white-space: nowrap;
+}
+
+@container (width < 26rem) {
+  .hero h1 .cursor {
+    display: block;
+  }
+}
+
+/*
+ * The typing animation is hidden from screen readers, which read the static
+ * text instead. With reduced motion, everyone gets the static text.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__static {
+    position: absolute; /* take it out of the layout */
+    width: 1px; /* clip it (via overflow) ... */
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%); /* ... and make sure nothing is painted */
+    white-space: nowrap; /* otherwise wrapped words can be read as one */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero h1 {
+    white-space: normal; /* nothing changes, so it may wrap */
+  }
+  .hero h1 .cursor {
+    display: none;
+  }
+}
+
+.hero p {
+  margin-top: 1.25rem;
+  max-width: 30rem;
+  font-size: 1.25rem;
+  color: var(--c-text-2);
+}
+
+/* The logo, with a blurred glow behind it; only on wide screens */
+.hero__image {
+  display: none;
+  position: relative;
+}
+
+.hero__image::before {
   content: "";
-  border-right: 1px solid black;
-  animation: blink 1s linear infinite;
-  animation-direction: alternate;
+  position: absolute;
+  inset: 15% 10%;
+  background: linear-gradient(
+    -45deg,
+    var(--c-logo-purple) 50%,
+    var(--c-logo-green) 50%
+  );
+  border-radius: 50%;
+  filter: blur(72px);
+  opacity: 0.45;
+}
+
+/* stack the logo above the glow */
+.hero__image img {
+  position: relative;
+}
+
+@media (min-width: 860px) {
+  .hero {
+    /* minmax(0, ...): column widths don't depend on the (changing) heading */
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    padding-block: 6rem 5rem;
+  }
+  .hero__image {
+    display: block;
+  }
+}
+
+/* Blinking cursor after the typed word. Tweaked until it looked good. */
+.cursor::after {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  margin-left: 4px;
+  vertical-align: -0.05em;
+  background: var(--c-brand);
+  animation: blink 1s steps(1) infinite;
 }
 
 @keyframes blink {
-  0% {
+  50% {
     opacity: 0;
   }
-  50% {
-    opacity: 0.5;
+}
+
+/** Sections */
+
+.section {
+  padding-block: 3rem;
+  border-top: 1px solid var(--c-divider);
+}
+
+.section h2 + * {
+  margin-top: 0.75rem;
+}
+
+.lead {
+  color: var(--c-text-2);
+}
+
+/* Running text; narrow, because long lines are hard to read */
+.prose {
+  max-width: 40rem;
+}
+
+.prose > * + * {
+  margin-top: 1rem;
+}
+
+.prose li + li {
+  margin-top: 0.5rem;
+}
+
+.prose code {
+  font-family: var(--ff-mono);
+  font-size: 0.875em;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--c-bg-soft);
+}
+
+/** Examples */
+
+.example {
+  display: grid;
+  margin-top: 1.5rem;
+  border: 1px solid var(--c-divider);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.example > * {
+  min-width: 0; /* let the code scroll instead of widening the grid */
+}
+
+@media (min-width: 860px) {
+  .example {
+    grid-template-columns: 3fr 2fr;
   }
-  100% {
-    opacity: 1;
-  }
+}
+
+.example h3 {
+  grid-column: 1 / -1;
+  padding: 0.6rem 1.25rem;
+  border-bottom: 1px solid var(--c-divider);
+  background: var(--c-bg-soft);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* The <pre> generated by Shiki (see plugins/shiki.ts) */
+.shiki {
+  padding: 1.25rem;
+  overflow-x: auto;
+  background: var(--c-bg-soft) !important; /* override shiki's theme bg */
+  font-family: var(--ff-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+
+.example__rendered {
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 600;
+  position: relative;
+  isolation: isolate;
+}
+
+/*
+ * Dashed diagonal lines, 16px apart. Every 4th line is in the logo colors
+ * (purple, purple, green), the rest are neutral. Even lines are in ::before,
+ * odd lines in ::after, so that their dashes can be offset by half a period.
+ * Using pseudo-elements also keeps the masks off the component.
+ */
+.example__rendered::before,
+.example__rendered::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+/* even lines: 0, 32px, 64px, ...; dashes: 24px dash, 16px gap (40px period) */
+.example__rendered::before {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--c-line) 0 2px,
+    transparent 0 32px
+  );
+  mask: repeating-linear-gradient(45deg, #000 0 24px, transparent 0 40px);
+}
+
+/* odd lines: 16px, 48px, 80px, ...; colored at 16px, 80px, 144px */
+.example__rendered::after {
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 16px,
+      var(--c-line-purple) 0 18px,
+      transparent 0 80px,
+      var(--c-line-purple) 0 82px,
+      transparent 0 144px,
+      var(--c-line-green) 0 146px,
+      transparent 0 192px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 48px,
+      var(--c-line) 0 50px,
+      transparent 0 64px
+    );
+  /* same dashes, shifted by half a period (20px) */
+  mask: repeating-linear-gradient(
+    45deg,
+    #000 0 4px,
+    transparent 0 20px,
+    #000 0 40px
+  );
+}
+
+.example__rendered > * {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.example__rendered p {
+  flex-basis: 100%;
+}
+
+.example__rendered :is(button, input) {
+  font: inherit;
+  font-size: 0.875rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--c-divider);
+  border-radius: 8px;
+  background: var(--c-bg);
+}
+
+.example__rendered button {
+  cursor: pointer;
+}
+
+.example__rendered button:hover {
+  border-color: var(--c-brand);
+}
+
+.example__rendered input {
+  width: 12rem;
+  font-weight: 400;
+}
+
+/** Footer */
+
+.footer {
+  padding-block: 2rem;
+  border-top: 1px solid var(--c-divider);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--c-text-2);
 }
