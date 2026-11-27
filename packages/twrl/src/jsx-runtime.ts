@@ -25,6 +25,8 @@ declare global {
       } & {
         [T in HTMLElementNumberAttributes<Tag>]?: number | Dyn<number>;
       } & (Tag extends keyof TwrlOverrides ? TwrlOverrides[Tag] : {}) & {
+          /* HTML-style 'class' attribute (alternative to 'className') */
+          class?: string | Dyn<string>;
           style?: string /* note: This should probably be CSSStyleDeclaration */;
           children?: Children /* defines the type of children */;
         };
@@ -89,8 +91,9 @@ export function createIntrinsicComponent(
       continue;
     }
 
-    if (key === "className") {
-      // this is jsx reporting a `<elem class="foo">`
+    if (key === "className" || key === "class") {
+      // `<elem class="foo">` or `<elem className="foo">`. TypeScript passes JSX
+      // attribute names through as-is, so both spellings may show up here.
 
       if (val instanceof Dyn) {
         // The class is a Dyn, so register updates
