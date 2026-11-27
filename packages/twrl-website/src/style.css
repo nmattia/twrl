@@ -216,6 +216,7 @@ a {
   );
   border-radius: 50%;
   filter: blur(72px);
+  transform: translate3d(0, 0, 0); /* Safari hack to turn on GPU */
   opacity: 0.45;
 }
 
