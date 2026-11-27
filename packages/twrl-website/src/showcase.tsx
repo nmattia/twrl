@@ -103,7 +103,7 @@ export const Changing = () => {
   const state = dyngen(fn, { current: "", ix: 0 });
 
   return (
-    <span className="cursor" aria-hidden="true">
+    <span class="cursor" aria-hidden="true">
       {state.map(({ current }) => current)}
     </span>
   );
@@ -111,8 +111,8 @@ export const Changing = () => {
 
 export const page: HTMLElement = (
   <div>
-    <header className="nav">
-      <nav className="container">
+    <header class="nav">
+      <nav class="container">
         <a href={import.meta.env.BASE_URL}>
           <img src={logo} alt="Twrl" />
         </a>
@@ -124,26 +124,26 @@ export const page: HTMLElement = (
     </header>
 
     <main>
-      <section className="hero container">
-        <div className="hero__text">
+      <section class="hero container">
+        <div class="hero__text">
           <h1>
             0% Magic, 100% <Changing />
-            <span className="hero__static">Fast, Correct, Magical.</span>
+            <span class="hero__static">Fast, Correct, Magical.</span>
           </h1>
           <p>
             Twrl is a JavaScript framework for building highly reactive apps
             and components.
           </p>
         </div>
-        <div className="hero__image">
+        <div class="hero__image">
           <img src={logo} alt="" />
         </div>
       </section>
 
-      <section id="how-it-works" className="section">
-        <div className="container">
+      <section id="how-it-works" class="section">
+        <div class="container">
           <h2>How it works</h2>
-          <div className="prose">
+          <div class="prose">
             <p>
               Twrl borrows concepts from Functional Reactive Programming (FRP)
               frameworks like Elm and Reflex, while staying very close to the
@@ -179,18 +179,18 @@ export const page: HTMLElement = (
         </div>
       </section>
 
-      <section id="examples" className="section">
-        <div className="container">
+      <section id="examples" class="section">
+        <div class="container">
           <h2>Examples</h2>
-          <p className="lead">
+          <p class="lead">
             These are some example components built with Twrl.
           </p>
           <div>
             {showcasedComponents.map(({ description, component: C, src }) => (
-              <article className="example">
+              <article class="example">
                 <h3>{description}</h3>
                 <div innerHTML={src}></div>
-                <div className="example__rendered">
+                <div class="example__rendered">
                   <C />
                 </div>
               </article>
@@ -200,7 +200,7 @@ export const page: HTMLElement = (
       </section>
     </main>
 
-    <footer className="footer">
+    <footer class="footer">
       Twrl · an experiment by <a href="https://nmattia.com">Nicolas Mattia</a>
     </footer>
   </div>

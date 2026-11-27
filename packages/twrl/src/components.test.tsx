@@ -271,6 +271,32 @@ it("reactive class attributes are set and updated", () => {
   expect(elem.className).toBe("ugly");
 });
 
+it("supports the 'class' attribute", () => {
+  document.body.appendChild(
+    <div class="first">
+      <span class="second">hello</span>
+    </div>,
+  );
+  expect(document.body.innerHTML).toBe(
+    '<div class="first"><span class="second">hello</span></div>',
+  );
+});
+
+it("reactive 'class' attributes are set and updated", () => {
+  const d = new Dyn("pretty");
+  const elem = <div class={d}></div>;
+  expect(elem.className).toBe("pretty");
+
+  d.send("ugly");
+  expect(elem.className).toBe("ugly");
+});
+
+it("'class' is type-checked", () => {
+  // @ts-expect-error: class must be a string or Dyn<string>
+  const elem = () => <div class={42}></div>;
+  void elem;
+});
+
 it("reactive dashed attributes (data-*) are set and updated", () => {
   const d = new Dyn("one");
   const elem = <div data-foo={d}></div>;
